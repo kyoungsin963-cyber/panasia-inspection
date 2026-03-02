@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>PANASIA 매장점검</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="점검앱">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a1a1a">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f5f0;
+    --surface: #ffffff;
+    --surface2: #f0f0eb;
+    --border: #e0ddd8;
+    --accent: #1a1a1a;
+    --accent-dim: #333333;
+    --good: #1a7a3f;
+    --good-bg: #e8f7ee;
+    --poor: #c0392b;
+    --poor-bg: #fdecea;
+    --skip: #999;
+    --skip-bg: #f5f5f0;
+    --text: #1a1a1a;
+    --text-dim: #555;
+    --text-muted: #999;
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    max-width: 480px;
+    margin: 0 auto;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #ffffff;
+    border-bottom: 2px solid var(--border);
+    padding: 16px 20px 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .logo {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: #1a1a1a;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+  }
+  .header-store {
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+  }
+  .header-meta {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+  .progress-bar-wrap {
+    background: var(--border);
+    border-radius: 4px;
+    height: 4px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: #1a1a1a;
+    border-radius: 4px;
+    transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+  .progress-label span:last-child { color: #1a1a1a; font-weight: 700; }
+
+  /* ── SCREEN MANAGER ── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── SETUP SCREEN ── */
+  .setup-screen { padding: 32px 20px; }
+  .setup-title {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+  .setup-title em { color: #1a1a1a; font-style: normal; border-bottom: 3px solid #e8c84a; }
+  .setup-sub { font-size: 14px; color: var(--text-dim); margin-bottom: 36px; }
+
+  .field { margin-bottom: 20px; }
+  .field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .field select, .field input {
+    width: 100%;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 16px;
+    padding: 14px 16px;
+    appearance: none;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .field select:focus, .field input:focus { border-color: var(--accent); }
+  .field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 40px; }
+
+  .supervisor-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .sv-tag {
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 40px;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .sv-tag.selected {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+    font-weight: 700;
+  }
+
+  .btn-start {
+    width: 100%;
+    background: #1a1a1a;
+    color: #ffffff;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 17px;
+    font-weight: 900;
+    border: none;
+    border-radius: var(--radius);
+    padding: 18px;
+    cursor: pointer;
+    margin-top: 12px;
+    letter-spacing: -0.01em;
+    transition: transform 0.1s, opacity 0.1s;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+  .btn-start:active { transform: scale(0.98); opacity: 0.9; }
+
+  /* ── CATEGORY NAV ── */
+  .cat-nav {
+    display: flex;
+    gap: 8px;
+    padding: 12px 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .cat-nav::-webkit-scrollbar { display: none; }
+  .cat-btn {
+    flex-shrink: 0;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 40px;
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    position: relative;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .cat-btn.active {
+    background: #1a1a1a;
+    border-color: #1a1a1a;
+    color: #ffffff;
+    font-weight: 700;
+  }
+  .cat-btn .cat-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    margin-left: 4px;
+    vertical-align: middle;
+    background: var(--good);
+  }
+  .cat-btn .cat-dot.has-poor { background: var(--poor); }
+  .cat-btn .cat-dot.empty { background: var(--text-muted); }
+
+  /* ── ITEMS ── */
+  .items-screen { padding: 16px 20px 120px; }
+
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .cat-icon {
+    width: 36px; height: 36px;
+    background: var(--surface2);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .cat-title { font-size: 16px; font-weight: 700; }
+  .cat-count { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  .item-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .item-card.result-good { border-color: var(--good); border-width: 2.5px; background: #f6fdf9; }
+  .item-card.result-poor { border-color: var(--poor); border-width: 2.5px; background: #fdf6f6; }
+  .item-card.result-pass { border-color: var(--good); border-width: 2.5px; background: #f6fdf9; }
+  .item-card.result-fail { border-color: var(--poor); border-width: 2.5px; background: #fdf6f6; }
+
+  .item-header {
+    padding: 16px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .item-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 3px;
+    flex-shrink: 0;
+    width: 20px;
+  }
+  .item-title-wrap { flex: 1; }
+  .item-title { font-size: 16px; font-weight: 800; line-height: 1.4; color: #1a1a1a; }
+  .item-result-badge {
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-top: 2px;
+  }
+  .badge-good { background: var(--good-bg); color: var(--good); }
+  .badge-poor { background: var(--poor-bg); color: var(--poor); }
+  .badge-pass { background: var(--good-bg); color: var(--good); }
+  .badge-fail { background: var(--poor-bg); color: var(--poor); }
+  .badge-none { background: var(--surface2); color: var(--text-muted); }
+
+  .item-criteria {
+    padding: 0 16px 14px 46px;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    display: none;
+  }
+  .item-criteria.open { display: block; }
+
+  .item-btns {
+    display: grid;
+    padding: 0 14px 14px;
+    gap: 8px;
+  }
+  .item-btns.type-good_poor { grid-template-columns: 1fr 1fr; }
+  .item-btns.type-pass_fail { grid-template-columns: 1fr 1fr; }
+
+  .result-btn {
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface2);
+    color: var(--text-dim);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    padding: 16px 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: -0.01em;
+  }
+  .result-btn:active { transform: scale(0.97); }
+  .result-btn.good-btn.active { background: var(--good); border-color: var(--good); color: #ffffff; }
+  .result-btn.poor-btn.active { background: var(--poor); border-color: var(--poor); color: #ffffff; }
+  .result-btn.pass-btn.active { background: var(--good); border-color: var(--good); color: #ffffff; }
+  .result-btn.fail-btn.active { background: var(--poor); border-color: var(--poor); color: #ffffff; }
+
+  .note-area {
+    padding: 0 14px 14px;
+    display: none;
+  }
+  .note-area.open { display: block; }
+  .note-area textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    padding: 12px 14px;
+    resize: none;
+    outline: none;
+    line-height: 1.6;
+    min-height: 80px;
+    transition: border-color 0.2s;
+  }
+  .note-area textarea:focus { border-color: #c0392b; box-shadow: 0 0 0 3px rgba(192,57,43,0.1); }
+  .note-area textarea::placeholder { color: var(--text-muted); }
+
+  .action-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .action-toggle input[type=checkbox] { display: none; }
+  .toggle-track {
+    width: 40px; height: 22px;
+    background: var(--border);
+    border-radius: 11px;
+    position: relative;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .toggle-track::after {
+    content: '';
+    position: absolute;
+    left: 3px; top: 3px;
+    width: 16px; height: 16px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s;
+  }
+  input:checked + .toggle-track { background: var(--poor); }
+  input:checked + .toggle-track::after { transform: translateX(18px); }
+  .toggle-label { font-size: 13px; color: var(--text-dim); }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    background: #ffffff;
+    border-top: 2px solid var(--border);
+    padding: 12px 20px 24px;
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
+    display: flex;
+    gap: 10px;
+    z-index: 100;
+  }
+  .btn-prev, .btn-next {
+    flex: 1;
+    border-radius: var(--radius-sm);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-prev { background: var(--surface2); color: var(--text-dim); }
+  .btn-next { background: #1a1a1a; color: #ffffff; }
+  .btn-prev:active, .btn-next:active { transform: scale(0.97); }
+
+  /* ── SUMMARY SCREEN ── */
+  .summary-screen { padding: 24px 20px 40px; }
+  .summary-title {
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    margin-bottom: 4px;
+  }
+  .summary-title em { color: #1a1a1a; font-style: normal; border-bottom: 3px solid #1a1a1a; }
+  .summary-sub { font-size: 14px; color: var(--text-dim); margin-bottom: 24px; }
+
+  .score-circle {
+    width: 140px; height: 140px;
+    margin: 0 auto 28px;
+    position: relative;
+  }
+  .score-circle svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .score-circle circle.track { fill: none; stroke: var(--border); stroke-width: 10; }
+  .score-circle circle.fill {
+    fill: none; stroke: #1a1a1a; stroke-width: 10;
+    stroke-linecap: round;
+    stroke-dasharray: 345;
+    stroke-dashoffset: 345;
+    transition: stroke-dashoffset 1s cubic-bezier(0.4,0,0.2,1);
+  }
+  .score-text {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .score-num { font-family: 'DM Mono', monospace; font-size: 34px; font-weight: 500; color: #1a1a1a; line-height: 1; }
+  .score-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 12px;
+    text-align: center;
+  }
+  .stat-card.good { border-color: var(--good); }
+  .stat-card.poor { border-color: var(--poor); }
+  .stat-num { font-family: 'DM Mono', monospace; font-size: 26px; font-weight: 500; }
+  .stat-card.good .stat-num { color: var(--good); }
+  .stat-card.poor .stat-num { color: var(--poor); }
+  .stat-lbl { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  .fail-list { margin-bottom: 24px; }
+  .fail-list-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .fail-item {
+    background: var(--surface);
+    border: 1.5px solid var(--poor-bg);
+    border-left: 3px solid var(--poor);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+  }
+  .fail-item-cat { font-size: 10px; color: var(--text-muted); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .fail-item-title { font-size: 14px; font-weight: 700; }
+  .fail-item-note { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
+  .fail-item-action { font-size: 11px; color: var(--poor); font-weight: 700; margin-top: 4px; }
+
+  .comment-section { margin-bottom: 24px; }
+  .comment-section label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .comment-section textarea {
+    width: 100%;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    padding: 14px;
+    resize: none;
+    outline: none;
+    line-height: 1.7;
+    min-height: 100px;
+    transition: border-color 0.2s;
+  }
+  .comment-section textarea:focus { border-color: var(--accent); }
+
+  .btn-submit {
+    width: 100%;
+    background: #1a1a1a;
+    color: #ffffff;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 17px;
+    font-weight: 900;
+    border: none;
+    border-radius: var(--radius);
+    padding: 18px;
+    cursor: pointer;
+    letter-spacing: -0.01em;
+    transition: all 0.1s;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+  .btn-submit:active { transform: scale(0.98); }
+
+  /* ── DONE SCREEN ── */
+  .done-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 40px 24px;
+    text-align: center;
+  }
+  .done-icon { font-size: 64px; margin-bottom: 20px; animation: pop 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+  @keyframes pop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .done-title { font-size: 28px; font-weight: 900; letter-spacing: -0.03em; margin-bottom: 8px; }
+  .done-title em { color: var(--good); font-style: normal; }
+  .done-sub { font-size: 15px; color: var(--text-dim); line-height: 1.7; }
+  .done-id {
+    margin-top: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    padding: 10px 20px;
+    font-size: 13px;
+    color: var(--text);
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 999;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── UTILS ── */
+  .hidden { display: none !important; }
+
+  /* ── PHOTO SECTION ── */
+  .photo-section {
+    padding: 0 14px 14px;
+    display: none;
+  }
+  .photo-section.open { display: block; }
+
+  .photo-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .photo-grid {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+
+  .photo-thumb {
+    width: 72px;
+    height: 72px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 2px solid var(--border);
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .photo-thumb:active { transform: scale(0.95); }
+
+  .photo-thumb-wrap {
+    position: relative;
+    width: 72px;
+    height: 72px;
+  }
+  .photo-thumb-wrap img {
+    width: 72px;
+    height: 72px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 2px solid var(--border);
+  }
+  .photo-delete-btn {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 22px;
+    height: 22px;
+    background: var(--poor);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+
+  .photo-add-btn {
+    width: 72px;
+    height: 72px;
+    border-radius: 10px;
+    border: 2px dashed var(--border);
+    background: var(--surface2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 22px;
+    color: var(--text-muted);
+    transition: all 0.15s;
+    gap: 2px;
+  }
+  .photo-add-btn:active { background: var(--border); transform: scale(0.95); }
+  .photo-add-btn span { font-size: 9px; color: var(--text-muted); font-weight: 600; }
+
+  .photo-upload-status {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    min-height: 16px;
+  }
+  .photo-upload-status.uploading { color: #e8a020; }
+  .photo-upload-status.done { color: var(--good); }
+  .photo-upload-status.error { color: var(--poor); }
+
+  /* ── PHOTO VIEWER MODAL ── */
+  .photo-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    background: rgba(0,0,0,0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .photo-modal.hidden { display: none; }
+  .photo-modal img {
+    max-width: 95vw;
+    max-height: 80vh;
+    border-radius: 12px;
+    object-fit: contain;
+  }
+  .photo-modal-close {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 10px 28px;
+    border-radius: 40px;
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+
+  /* ── LOADING OVERLAY ── */
+  .loading-overlay {
+    position: fixed; inset: 0; z-index: 999;
+    background: rgba(255,255,255,0.85);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 16px;
+    backdrop-filter: blur(4px);
+  }
+  .loading-spinner {
+    width: 48px; height: 48px;
+    border: 3px solid var(--border);
+    border-top-color: #1a1a1a;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 14px; color: #1a1a1a; font-weight: 600; }
+
+  /* ── DB STATUS BADGE ── */
+  .db-status {
+    position: fixed; bottom: 90px; right: 16px;
+    font-size: 11px; font-family: 'DM Mono', monospace;
+    padding: 4px 10px; border-radius: 20px;
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text-muted); z-index: 50;
+    transition: all 0.3s;
+  }
+  .db-status.connected { border-color: var(--good); color: var(--good); }
+  .db-status.error { border-color: var(--poor); color: var(--poor); }
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- PHOTO MODAL -->
+<div class="photo-modal hidden" id="photoModal">
+  <img id="photoModalImg" src="" alt="점검 사진">
+  <button class="photo-modal-close" onclick="closePhotoModal()">✕ 닫기</button>
+</div>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay hidden" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text" id="loadingText">Supabase에 저장 중...</div>
+</div>
+
+<!-- DB STATUS -->
+<div class="db-status hidden" id="dbStatus">● DB</div>
+
+<!-- HEADER (점검 중에만 표시) -->
+<div class="header hidden" id="mainHeader">
+  <div class="header-top">
+    <span class="logo">PANASIA · INSPECTION</span>
+    <span id="headerDate" style="font-size:12px;color:var(--text-muted);font-family:'DM Mono',monospace"></span>
+  </div>
+  <div style="font-size:18px;font-weight:900;" id="headerStore">-</div>
+  <div class="header-meta" id="headerMeta">-</div>
+  <div style="margin-top:10px;">
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="progress-label">
+      <span id="progressText">0 / 0 항목</span>
+      <span id="progressPct">0%</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SCREEN 1: SETUP                          -->
+<!-- ══════════════════════════════════════════ -->
+<div class="screen active" id="screenSetup">
+  <div class="setup-screen">
+    <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent);margin-bottom:16px;letter-spacing:0.08em;">PANASIA DINEHILL</div>
+    <div class="setup-title">매장 점검을<br><em>시작합니다</em></div>
+    <div class="setup-sub">점검 정보를 입력하고 시작하세요</div>
+
+    <div class="field">
+      <label>브랜드</label>
+      <select id="brandSelect" onchange="updateStoreList()">
+        <option value="">브랜드 선택</option>
+        <option value="온기정">온기정</option>
+        <option value="정데판">정데판</option>
+        <option value="포앤웍">포앤웍</option>
+        <option value="텐동">텐동</option>
+        <option value="홍기정">홍기정</option>
+        <option value="유주키친">유주키친</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>매장명</label>
+      <select id="storeSelect">
+        <option value="">브랜드를 먼저 선택하세요</option>
+      </select>
+    </div>
+
+    <div class="field" id="storeCustomWrap" style="display:none;">
+      <label>매장명 직접입력</label>
+      <input type="text" id="storeCustomInput" placeholder="매장명 입력" />
+    </div>
+
+    <div class="field">
+      <label>점검자 선택 (복수 가능)</label>
+      <div class="supervisor-tags">
+        <div class="sv-tag" data-name="김선동 과장">김선동 과장</div>
+        <div class="sv-tag" data-name="임대규 계장">임대규 계장</div>
+        <div class="sv-tag" data-name="박지현 과장">박지현 과장</div>
+        <div class="sv-tag" data-name="이준혁 팀장">이준혁 팀장</div>
+        <div class="sv-tag" data-name="직접입력">✏️ 직접입력</div>
+      </div>
+      <input type="text" id="svCustomInput" placeholder="점검자 이름 직접 입력" style="margin-top:10px;display:none;" />
+    </div>
+
+    <div class="field">
+      <label>점검 일자</label>
+      <input type="date" id="dateInput" />
+    </div>
+
+    <button class="btn-start" onclick="startInspection()">점검 시작 →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SCREEN 2: ITEMS                          -->
+<!-- ══════════════════════════════════════════ -->
+<div class="screen" id="screenItems">
+  <div class="cat-nav" id="catNav"></div>
+  <div class="items-screen" id="itemsList"></div>
+  <div class="bottom-nav">
+    <button class="btn-prev" onclick="prevCategory()">← 이전</button>
+    <button class="btn-next" id="btnNext" onclick="nextOrSummary()">다음 →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SCREEN 3: SUMMARY                        -->
+<!-- ══════════════════════════════════════════ -->
+<div class="screen" id="screenSummary">
+  <div class="summary-screen">
+    <div class="summary-title">점검 완료<br><em>결과 요약</em></div>
+    <div class="summary-sub" id="summaryMeta">-</div>
+
+    <div class="score-circle">
+      <svg viewBox="0 0 120 120">
+        <circle class="track" cx="60" cy="60" r="55"/>
+        <circle class="fill" id="scoreCircle" cx="60" cy="60" r="55"/>
+      </svg>
+      <div class="score-text">
+        <div class="score-num" id="scoreNum">-</div>
+        <div class="score-label">종합점수</div>
+      </div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card good">
+        <div class="stat-num" id="statGood">0</div>
+        <div class="stat-lbl">우수/적합</div>
+      </div>
+      <div class="stat-card poor">
+        <div class="stat-num" id="statPoor">0</div>
+        <div class="stat-lbl">미흡/부적합</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statSkip">0</div>
+        <div class="stat-lbl">미점검</div>
+      </div>
+    </div>
+
+    <div class="fail-list" id="failList"></div>
+
+    <div class="comment-section">
+      <label>총평 (코멘트)</label>
+      <textarea id="finalComment" placeholder="매장에 대한 종합 의견을 입력하세요..."></textarea>
+    </div>
+
+    <button class="btn-submit" onclick="submitInspection()">본사에 제출하기 →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SCREEN 4: DONE                           -->
+<!-- ══════════════════════════════════════════ -->
+<div class="screen" id="screenDone">
+  <div class="done-screen">
+    <div class="done-icon">✅</div>
+    <div class="done-title">제출 <em>완료!</em></div>
+    <div class="done-sub">점검 결과가 본사에 전송되었습니다.<br>수고하셨습니다!</div>
+    <div class="done-id" id="doneId">-</div>
+    <button class="btn-start" style="margin-top:32px;width:100%;" onclick="resetApp()">새 점검 시작하기</button>
+  </div>
+</div>
+
+
+<script>
+// ══════════════════════════════════
+// DATA: 점검 항목 마스터
+// ══════════════════════════════════
+const CATEGORIES = [
+  { id: 'basic',   icon: '📋', name: '기본분야',           type: 'pass_fail' },
+  { id: 'hall',    icon: '🪑', name: '고객동선·객석',       type: 'good_poor' },
+  { id: 'kitchen', icon: '🍳', name: '주방·음식제조',       type: 'good_poor' },
+  { id: 'service', icon: '🫱', name: 'Hall Service',      type: 'good_poor' },
+  { id: 'menu',    icon: '🍽️', name: 'Menu Quality',      type: 'good_poor' },
+];
+
+const ITEMS = {
+  basic: [
+    { num:1,  title:'행정처분',                         criteria:'최근 1년간 행정처분(과태료, 과징금, 영업정지)을 받은 사실이 없음' },
+    { num:2,  title:'음식물 재사용',                     criteria:'음식물 쓰레기 처리에 대한 관련 서류를 구비하고 있음' },
+    { num:3,  title:'근무자 보건증',                     criteria:'종사자의 건강검진 일자를 준수하고 있음' },
+    { num:4,  title:'원재료 유통기한 준수',               criteria:'원재료 유통기한 준수\n남은 원재료에 재료명·입고일자·유통기한 표시 후 보관' },
+    { num:5,  title:'조리장 방충·방서',                   criteria:'방충·방서 시설 구비 및 정상 작동' },
+    { num:6,  title:'전용 칼/도마 구분사용',              criteria:'어류·육류·채소류 전용 칼·도마 구분 사용\n기준 부착 및 인지교육 실시' },
+    { num:7,  title:'살균·소독제 별도 보관',              criteria:'식품취급 구역과 구획된 환기 장소에 보관\n라벨 표시 훼손 없음' },
+    { num:8,  title:'식재료 바닥 이격 보관',              criteria:'식재료를 바닥에서 15cm 이상 이격하여 보관' },
+    { num:9,  title:'튀김유 산가관리',                   criteria:'산가기준 3.0 이하 관리\n사용 목적 유지는 밀봉 보관' },
+    { num:10, title:'위생모 등 착용',                    criteria:'위생모 착용 및 청결 상태 양호\n본사 지정 유니폼 착용 및 청결 상태' },
+    { num:11, title:'식품용 기구 사용',                   criteria:'식품용으로 표시된 기구·용기 사용' },
+  ],
+  hall: [
+    { num:1,  title:'천장·벽·바닥 청결상태',              criteria:'거미줄, 이물, 먼지, 곰팡이 없음\n조명기구 주변 청결\n발매트 청결 유지' },
+    { num:2,  title:'매장 외부시설 청결',                 criteria:'간판, 라이트패널, 벽, VMD 파손 없음\n고객동선 장애물 없음' },
+    { num:3,  title:'창문·커튼·노렌 관리',                criteria:'파손·훼손 없음\n주기적 관리로 청결 유지' },
+    { num:4,  title:'객석 방충·방서 관리',                criteria:'해충 서식 및 유입흔적 없음\n주기적 방충·방서 관리' },
+    { num:5,  title:'에어컨·선풍기 청결',                 criteria:'먼지, 이물질, 찌꺼기 없이 청소\n환풍시설(디퓨저) 주변 청결' },
+    { num:6,  title:'식탁 청결상태',                     criteria:'이물질·얼룩 없음\n테이블 셋팅 본사 기준 준수\n식탁 하단 청결' },
+    { num:7,  title:'음용수·제빙기 관리',                 criteria:'정수기 정기 점검·정비\n추출구·코크 청결\n주변 곰팡이 없음' },
+    { num:8,  title:'포장용기 보관 위생',                 criteria:'보관장소 청결\n포장용기 내부 찌꺼기 없음' },
+    { num:9,  title:'행주·걸레 관리',                    criteria:'행주·걸레 구분 보관 및 사용\n청결 유지·충분한 수량' },
+    { num:10, title:'서비스테이블 정리정돈',               criteria:'집기류 청결 정리\n반찬류 논피크 시 냉장 보관' },
+    { num:11, title:'손소독제 제공',                     criteria:'손소독제 구비 및 제공' },
+    { num:12, title:'물수건 제공',                       criteria:'청결한 물수건 제공' },
+    { num:13, title:'홀 쓰레기통 청결',                   criteria:'청결 유지 및 주기적 관리\n덮개 있음' },
+  ],
+  kitchen: [
+    { num:1,  title:'후드장치 청결',                     criteria:'정상 작동\n응결수·기름 없음\n필터 청결 관리' },
+    { num:2,  title:'주방 벽·시설 관리',                  criteria:'거미줄 없음\n벽·바닥 보수 필요 없음\n콘센트 청결 및 커버 있음' },
+    { num:3,  title:'배수시설·바닥 관리',                  criteria:'트렌치 덮개 정상 설치\n바닥 물·기름·음식물 찌꺼기 없음' },
+    { num:4,  title:'환풍장치 청결',                     criteria:'먼지·이물질 없음\n조리구역 위 환풍시설 청결 관리' },
+    { num:5,  title:'식품 보관공간 관리',                  criteria:'창고 내부 청결\n환기 적절\n식품·제품 포장 깨끗하고 정리정돈 잘 됨' },
+    { num:6,  title:'기기·선반 위생관리',                  criteria:'주기적 세척·청소\n녹슬거나 부식된 곳 없음' },
+    { num:7,  title:'음식 운반기구 청결',                  criteria:'트레이·운반수레·서빙카트 내외부 청결' },
+    { num:8,  title:'냉장·냉동고 온도관리',                criteria:'냉장 10℃ 이하\n냉동 -18℃ 이하 유지' },
+    { num:9,  title:'냉장·냉동고 성에 관리',               criteria:'응결수·성에 없음\n패킹 훼손 없음\n외부 청결' },
+    { num:10, title:'냉장·냉동고 식재료 보관',             criteria:'선입선출 실시\n외포장 박스 제거 후 보관\n보관용량 70% 이하\n익힌음식 상단·날음식 하단' },
+    { num:11, title:'냉동식품 해동방법',                   criteria:'냉장·유수·전자레인지 해동 사용\n해동중 표시 및 교차오염 방지\n한번 해동한 식품 재냉동 금지' },
+    { num:12, title:'잠재적 위해식품 보관',                criteria:'냉장보관 제품(달걀, 두부 등) 적절한 냉장시설 보관' },
+    { num:13, title:'조리식품 보관상태',                   criteria:'덮개 사용 위생 보관\n차가운 조리음식 6℃ 이하 보냉기·냉장 보관' },
+    { num:14, title:'원산지 관리',                        criteria:'원산지 증명 서류 6개월 보관\n메뉴판 원산지와 실제 동일\n소비자 알아볼 수 있게 표기' },
+    { num:15, title:'양념통 위생·표시',                   criteria:'양념통 표면 청결\n소분 시 제품명·유통기한 표시\n밀봉 적절' },
+    { num:16, title:'식기·도구 소독',                     criteria:'식기세척기 살균·건조 정상 작동\n도마소독기 정상 작동 및 사용 중' },
+    { num:17, title:'수저·컵 청결·보관',                   criteria:'칼·수저·컵 청결\n수저통 뚜껑 있고 청결\n물병 청결·컵 받침대 구비' },
+    { num:18, title:'손세척 절차',                        criteria:'손세척 씽크 마련\n소독·세척제 구비\n실제 손세척 이루어짐' },
+    { num:19, title:'폐기물 청결관리',                    criteria:'내수성 쓰레기통 구비\n쓰레기통 청결·파손 없음\n넘치지 않고 주변 청결' },
+  ],
+  service: [
+    { num:1, title:'홀 내부 컨디션',        criteria:'음악 소리 적정 음향 유지' },
+    { num:2, title:'고객환대 및 대기 관리',  criteria:'입점 시 환대 인사 및 안내 원활\n대기고객 리스트 및 응대 관리 원활' },
+    { num:3, title:'대기 시 바른자세',       criteria:'고객쪽으로 시선 유지\n밝은 표정\n큰소리 대화 없음' },
+    { num:4, title:'고객 응대',             criteria:'아이컨텍 및 안내 친절하게 이루어짐' },
+    { num:5, title:'테이블 터치',           criteria:'호출에 신속 응답\n메뉴 제공 시 적절한 코멘트' },
+    { num:6, title:'고객 결제 및 퇴점',      criteria:'결제 시 친절한 응대\n퇴점 시 퇴점인사' },
+  ],
+  menu: [
+    { num:1, title:'쿡타임 준수',    criteria:'주문~제공 시간 적절\n조리 후 빠른 제공' },
+    { num:2, title:'레시피 준수',    criteria:'지정 식자재 사용\n레시피·프랩규격 준수\n정량 제공' },
+    { num:3, title:'조리 숙련도',    criteria:'신선도 체크\n익힘 정도 적절\n플레이팅 레시피 준수' },
+    { num:4, title:'메뉴 접시·기물', criteria:'접시·기물 청결\n깨짐·흠집 없음\n소스 오물 정리 후 제공' },
+  ],
+};
+
+// ══════════════════════════════════
+// SUPABASE CONFIG
+// ══════════════════════════════════
+const SUPABASE_URL = 'https://qrhhmirgcbvxygcyyhzd.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFyaGhtaXJnY2J2eHlnY3l5aHpkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyNTcxNDksImV4cCI6MjA4NzgzMzE0OX0.x71XCSt_e0wKBj7Lltvr-tYUB-LF4xLYL1A-12RzYPs';
+
+const sb = {
+  headers: {
+    'Content-Type': 'application/json',
+    'apikey': SUPABASE_KEY,
+    'Authorization': `Bearer ${SUPABASE_KEY}`,
+    'Prefer': 'return=representation',
+  },
+  async select(table, query = '') {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}${query}`, { headers: this.headers });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  },
+  async insert(table, data) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+      method: 'POST', headers: this.headers, body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  },
+};
+
+// ══════════════════════════════════
+// STATE
+// ══════════════════════════════════
+let state = {
+  store: '', brand: '', supervisors: [], date: '',
+  currentCat: 0,
+  results: {}, // { 'basic-0': {result, note, action, photos:[]} }
+  inspectionId: null,
+};
+
+// ══════════════════════════════════
+// STORE DATA
+// ══════════════════════════════════
+const STORE_DATA = {
+  '온기정': ['인천점','평촌점','서면점','용산점','하남점','안성점','부천점','역삼점','천안점','한남점','대구점','센텀시티점','김해점','광주점','대전점','경기점','시흥점','월계점','일산점'],
+  '정데판': ['안성점','고양점'],
+  '포앤웍': ['포앤웍'],
+  '텐동':   [],
+  '홍기정': [],
+  '유주키친':['IFC몰점'],
+};
+
+function updateStoreList() {
+  const brand = document.getElementById('brandSelect').value;
+  const sel = document.getElementById('storeSelect');
+  const stores = STORE_DATA[brand] || [];
+  if (!brand) {
+    sel.innerHTML = '<option value="">브랜드를 먼저 선택하세요</option>';
+    return;
+  }
+  sel.innerHTML = '<option value="">매장 선택</option>' +
+    stores.map(s => `<option value="${s}">${s}</option>`).join('') +
+    '<option value="__custom__">✏️ 직접입력</option>';
+  sel.onchange = () => {
+    const customWrap = document.getElementById('storeCustomWrap');
+    customWrap.style.display = sel.value === '__custom__' ? 'block' : 'none';
+  };
+}
+
+// ══════════════════════════════════
+// SETUP
+// ══════════════════════════════════
+document.querySelectorAll('.sv-tag').forEach(tag => {
+  tag.addEventListener('click', () => {
+    const name = tag.dataset.name;
+    if (name === '직접입력') {
+      document.getElementById('svCustomInput').style.display = 'block';
+      document.getElementById('svCustomInput').focus();
+      return;
+    }
+    tag.classList.toggle('selected');
+  });
+});
+
+// Set today's date
+document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
+
+function startInspection() {
+  const brand = document.getElementById('brandSelect').value;
+  const storeSelect = document.getElementById('storeSelect').value;
+  const storeCustom = document.getElementById('storeCustomInput')?.value.trim();
+  const store = storeSelect === '__custom__' ? storeCustom : storeSelect;
+  const date = document.getElementById('dateInput').value;
+  const svTags = [...document.querySelectorAll('.sv-tag.selected')].map(t => t.dataset.name);
+  const svCustom = document.getElementById('svCustomInput').value.trim();
+  if (svCustom) svTags.push(svCustom);
+
+  if (!brand) { showToast('브랜드를 선택해주세요'); return; }
+  if (!store) { showToast('매장명을 선택해주세요'); return; }
+  if (svTags.length === 0) { showToast('점검자를 선택해주세요'); return; }
+
+  state.brand = brand;
+  state.store = store;
+  state.supervisors = svTags;
+  state.date = date;
+  state.results = {};
+  state.currentCat = 0;
+
+  document.getElementById('headerStore').textContent = `${brand} ${store}`;
+  document.getElementById('headerMeta').textContent = svTags.join(', ');
+  document.getElementById('headerDate').textContent = date.replace(/-/g, '.');
+  document.getElementById('mainHeader').classList.remove('hidden');
+
+  showScreen('screenItems');
+  renderCatNav();
+  renderItems();
+}
+
+// ══════════════════════════════════
+// CATEGORY NAV
+// ══════════════════════════════════
+function renderCatNav() {
+  const nav = document.getElementById('catNav');
+  nav.innerHTML = CATEGORIES.map((cat, i) => {
+    const items = ITEMS[cat.id];
+    const results = items.map((_, j) => state.results[`${cat.id}-${j}`]?.result);
+    const hasPoor = results.some(r => r === 'poor' || r === 'fail');
+    const allDone = results.every(r => r && r !== '');
+    const dotClass = !results.some(r => r) ? 'empty' : hasPoor ? 'has-poor' : '';
+    return `<button class="cat-btn ${i === state.currentCat ? 'active' : ''}" onclick="goToCategory(${i})">
+      ${cat.icon} ${cat.name}
+      ${allDone || results.some(r => r) ? `<span class="cat-dot ${dotClass}"></span>` : ''}
+    </button>`;
+  }).join('');
+}
+
+function goToCategory(idx) {
+  state.currentCat = idx;
+  renderCatNav();
+  renderItems();
+  document.getElementById('itemsList').scrollTop = 0;
+}
+
+// ══════════════════════════════════
+// ITEMS RENDER
+// ══════════════════════════════════
+function renderItems() {
+  const cat = CATEGORIES[state.currentCat];
+  const items = ITEMS[cat.id];
+  const isLast = state.currentCat === CATEGORIES.length - 1;
+
+  document.getElementById('btnNext').textContent = isLast ? '결과 확인 →' : '다음 →';
+
+  let html = `<div class="category-header">
+    <div class="cat-icon">${cat.icon}</div>
+    <div>
+      <div class="cat-title">${cat.name}</div>
+      <div class="cat-count">총 ${items.length}개 항목</div>
+    </div>
+  </div>`;
+
+  items.forEach((item, j) => {
+    const key = `${cat.id}-${j}`;
+    const res = state.results[key] || {};
+    const r = res.result || '';
+    const note = res.note || '';
+    const action = res.requires_action || false;
+
+    const badgeMap = { good:'badge-good', poor:'badge-poor', pass:'badge-pass', fail:'badge-fail' };
+    const labelMap = { good:'우  수', poor:'미  흡', pass:'적  합', fail:'부적합' };
+    const badgeClass = badgeMap[r] || 'badge-none';
+    const badgeText = labelMap[r] || '미점검';
+
+    const cardClass = r ? `result-${r}` : '';
+    const noteOpen = (r === 'poor' || r === 'fail') ? 'open' : '';
+    const type = cat.type;
+
+    html += `<div class="item-card ${cardClass}" id="card-${key}">
+      <div class="item-header" onclick="toggleCriteria('${key}')">
+        <div class="item-num">${item.num}</div>
+        <div class="item-title-wrap">
+          <div class="item-title">${item.title}</div>
+        </div>
+        <div class="item-result-badge ${badgeClass}">${badgeText}</div>
+      </div>
+      <div class="item-criteria" id="criteria-${key}">
+        ${item.criteria.split('\n').map(l => `• ${l}`).join('<br>')}
+      </div>
+      <div class="item-btns type-${type}">
+        ${type === 'good_poor' ? `
+          <button class="result-btn good-btn ${r==='good'?'active':''}" onclick="setResult('${key}','good')">✓ 우  수</button>
+          <button class="result-btn poor-btn ${r==='poor'?'active':''}" onclick="setResult('${key}','poor')">✕ 미  흡</button>
+        ` : `
+          <button class="result-btn pass-btn ${r==='pass'?'active':''}" onclick="setResult('${key}','pass')">✓ 적  합</button>
+          <button class="result-btn fail-btn ${r==='fail'?'active':''}" onclick="setResult('${key}','fail')">✕ 부적합</button>
+        `}
+      </div>
+      <div class="note-area ${noteOpen}" id="note-${key}">
+        <textarea placeholder="지적사항을 입력하세요..." onchange="setNote('${key}',this.value)">${note}</textarea>
+        <label class="action-toggle">
+          <input type="checkbox" ${action?'checked':''} onchange="setAction('${key}',this.checked)">
+          <div class="toggle-track"></div>
+          <span class="toggle-label">🚨 즉시조치 필요</span>
+        </label>
+      </div>
+      <div class="photo-section ${noteOpen}" id="photos-${key}">
+        <div class="photo-section-title">📸 현장 사진</div>
+        <div class="photo-grid" id="photo-grid-${key}">
+          <div class="photo-add-btn" onclick="triggerPhotoInput('${key}')">
+            <span>📷</span>
+            <span>사진추가</span>
+          </div>
+        </div>
+        <input type="file" accept="image/*" capture="environment"
+          id="photo-input-${key}" style="display:none"
+          onchange="handlePhotoSelect('${key}', this)">
+        <div class="photo-upload-status" id="photo-status-${key}"></div>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('itemsList').innerHTML = html;
+  updateProgress();
+}
+
+function toggleCriteria(key) {
+  document.getElementById(`criteria-${key}`).classList.toggle('open');
+}
+
+function setResult(key, result) {
+  if (!state.results[key]) state.results[key] = {};
+  state.results[key].result = result;
+
+  const card = document.getElementById(`card-${key}`);
+  card.className = `item-card result-${result}`;
+
+  // badge
+  const badgeMap = { good:'badge-good', poor:'badge-poor', pass:'badge-pass', fail:'badge-fail' };
+  const labelMap = { good:'우  수', poor:'미  흡', pass:'적  합', fail:'부적합' };
+  card.querySelector('.item-result-badge').className = `item-result-badge ${badgeMap[result]}`;
+  card.querySelector('.item-result-badge').textContent = labelMap[result];
+
+  // buttons
+  card.querySelectorAll('.result-btn').forEach(b => b.classList.remove('active'));
+  card.querySelector(`.${result === 'good' || result === 'pass' ? (result+'-btn') : (result+'-btn')}`).classList.add('active');
+
+  // note area
+  const noteArea = document.getElementById(`note-${key}`);
+  if (result === 'poor' || result === 'fail') {
+    noteArea.classList.add('open');
+  } else {
+    noteArea.classList.remove('open');
+    state.results[key].note = '';
+    state.results[key].requires_action = false;
+  }
+
+  updateProgress();
+  renderCatNav();
+}
+
+function setNote(key, val) {
+  if (!state.results[key]) state.results[key] = {};
+  state.results[key].note = val;
+}
+
+function setAction(key, val) {
+  if (!state.results[key]) state.results[key] = {};
+  state.results[key].requires_action = val;
+}
+
+// ══════════════════════════════════
+// PROGRESS
+// ══════════════════════════════════
+function updateProgress() {
+  let total = 0, done = 0;
+  CATEGORIES.forEach(cat => {
+    ITEMS[cat.id].forEach((_, j) => {
+      total++;
+      if (state.results[`${cat.id}-${j}`]?.result) done++;
+    });
+  });
+  const pct = total ? Math.round(done/total*100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `${done} / ${total} 항목`;
+  document.getElementById('progressPct').textContent = pct + '%';
+}
+
+// ══════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════
+function prevCategory() {
+  if (state.currentCat > 0) {
+    goToCategory(state.currentCat - 1);
+  }
+}
+
+function nextOrSummary() {
+  if (state.currentCat < CATEGORIES.length - 1) {
+    goToCategory(state.currentCat + 1);
+    window.scrollTo(0,0);
+  } else {
+    showSummary();
+  }
+}
+
+// ══════════════════════════════════
+// SUMMARY
+// ══════════════════════════════════
+function showSummary() {
+  let good=0, poor=0, skip=0;
+  const failItems = [];
+
+  CATEGORIES.forEach(cat => {
+    ITEMS[cat.id].forEach((item, j) => {
+      const key = `${cat.id}-${j}`;
+      const r = state.results[key]?.result;
+      if (!r) { skip++; return; }
+      if (r === 'good' || r === 'pass') good++;
+      else { poor++; failItems.push({ cat: cat.name, item, res: state.results[key] }); }
+    });
+  });
+
+  const total = good + poor;
+  const score = total ? Math.round(good/total*100) : 0;
+
+  document.getElementById('summaryMeta').textContent = `${state.brand} ${state.store} · ${state.date} · ${state.supervisors.join(', ')}`;
+  document.getElementById('statGood').textContent = good;
+  document.getElementById('statPoor').textContent = poor;
+  document.getElementById('statSkip').textContent = skip;
+  document.getElementById('scoreNum').textContent = score + '%';
+
+  // circle animation
+  setTimeout(() => {
+    const offset = 345 - (345 * score / 100);
+    document.getElementById('scoreCircle').style.strokeDashoffset = offset;
+    if (score >= 80) document.getElementById('scoreCircle').style.stroke = 'var(--good)';
+    else if (score >= 60) document.getElementById('scoreCircle').style.stroke = '#e8a020';
+    else document.getElementById('scoreCircle').style.stroke = 'var(--poor)';
+    document.getElementById('scoreNum').style.color = score >= 80 ? 'var(--good)' : score >= 60 ? '#e8a020' : 'var(--poor)';
+  }, 100);
+
+  // fail list
+  let failHtml = '';
+  if (failItems.length > 0) {
+    failHtml = `<div class="fail-list-title">⚠️ 미흡/부적합 항목 (${failItems.length}건)</div>`;
+    failItems.forEach(f => {
+      failHtml += `<div class="fail-item">
+        <div class="fail-item-cat">${f.cat}</div>
+        <div class="fail-item-title">${f.item.num}. ${f.item.title}</div>
+        ${f.res.note ? `<div class="fail-item-note">📝 ${f.res.note}</div>` : ''}
+        ${f.res.requires_action ? `<div class="fail-item-action">🚨 즉시조치 필요</div>` : ''}
+        ${(f.res.photos?.length) ? `<div style="font-size:11px;color:var(--good);margin-top:3px;">📸 사진 ${f.res.photos.length}장</div>` : ''}
+      </div>`;
+    });
+  } else {
+    failHtml = `<div style="text-align:center;padding:20px;color:var(--good);font-weight:700;">🎉 미흡 항목 없음!</div>`;
+  }
+  document.getElementById('failList').innerHTML = failHtml;
+
+  showScreen('screenSummary');
+}
+
+// ══════════════════════════════════
+// SUBMIT
+// ══════════════════════════════════
+async function submitInspection() {
+  const comment = document.getElementById('finalComment').value;
+  const btn = document.querySelector('.btn-submit');
+  btn.textContent = '제출 중...';
+  btn.disabled = true;
+
+  try {
+    // 1. store_id 조회
+    const stores = await sb.select('stores',
+      `?select=id,name,brands(name)&name=eq.${encodeURIComponent(state.store)}`);
+    let storeId = stores[0]?.id || null;
+
+    // store가 없으면 임시 생성
+    if (!storeId) {
+      const brands = await sb.select('brands', `?name=eq.${encodeURIComponent(state.brand)}`);
+      let brandId = brands[0]?.id || null;
+      if (!brandId) {
+        const nb = await sb.insert('brands', { name: state.brand });
+        brandId = nb[0]?.id;
+      }
+      const ns = await sb.insert('stores', { brand_id: brandId, name: state.store, is_active: true });
+      storeId = ns[0]?.id;
+    }
+
+    // 2. 점수 계산
+    let good = 0, poor = 0, skip = 0;
+    CATEGORIES.forEach(cat => {
+      ITEMS[cat.id].forEach((_, j) => {
+        const r = state.results[`${cat.id}-${j}`]?.result;
+        if (!r) skip++;
+        else if (r === 'good' || r === 'pass') good++;
+        else poor++;
+      });
+    });
+    const total = good + poor;
+    const score = total ? Math.round(good / total * 100) : 0;
+
+    // 3. inspection 헤더 INSERT
+    const inspData = {
+      store_id: storeId,
+      inspected_at: state.date,
+      supervisor_ids: [],
+      status: 'submitted',
+      total_items: total + skip,
+      pass_count: good,
+      fail_count: poor,
+      score: score,
+      comment: comment,
+      submitted_at: new Date().toISOString(),
+    };
+    const insp = await sb.insert('inspections', inspData);
+    const inspectionId = insp[0]?.id;
+
+    // 4. inspection_items INSERT (배치)
+    const itemsPayload = [];
+    CATEGORIES.forEach(cat => {
+      ITEMS[cat.id].forEach((item, j) => {
+        const key = `${cat.id}-${j}`;
+        const res = state.results[key] || {};
+        itemsPayload.push({
+          inspection_id: inspectionId,
+          result: res.result || 'skip',
+          note: res.note || null,
+          requires_action: res.requires_action || false,
+          // checklist_item_id는 마스터 데이터 연동 후 추가 예정
+        });
+      });
+    });
+    const insertedItems = await sb.insert('inspection_items', itemsPayload);
+
+    // 5. 사진 DB 저장
+    if (insertedItems?.length) {
+      let itemIdx = 0;
+      for (const cat of CATEGORIES) {
+        for (let j = 0; j < ITEMS[cat.id].length; j++) {
+          const key = `${cat.id}-${j}`;
+          const itemId = insertedItems[itemIdx]?.id;
+          if (itemId && state.results[key]?.photos?.length) {
+            await savePhotosToDb(inspectionId, itemId, key);
+          }
+          itemIdx++;
+        }
+      }
+    }
+
+    // 6. 완료 화면
+    document.getElementById('doneId').textContent = `점검 ID: ${inspectionId?.slice(0,8).toUpperCase() || 'SAVED'}`;
+    showScreen('screenDone');
+    document.getElementById('mainHeader').classList.add('hidden');
+
+  } catch (err) {
+    console.error('제출 오류:', err);
+    showToast('⚠️ 저장 실패: ' + (err.message?.slice(0,40) || '네트워크 오류'));
+    btn.textContent = '본사에 제출하기 →';
+    btn.disabled = false;
+  }
+}
+
+function buildPayload(comment, id) {
+  const results = [];
+  CATEGORIES.forEach(cat => {
+    ITEMS[cat.id].forEach((item, j) => {
+      const key = `${cat.id}-${j}`;
+      const r = state.results[key] || {};
+      results.push({
+        category: cat.id,
+        category_name: cat.name,
+        item_number: item.num,
+        item_title: item.title,
+        result: r.result || 'skip',
+        note: r.note || '',
+        requires_action: r.requires_action || false,
+      });
+    });
+  });
+  return {
+    id,
+    store: state.store,
+    brand: state.brand,
+    supervisors: state.supervisors,
+    inspected_at: state.date,
+    comment,
+    items: results,
+  };
+}
+
+// ══════════════════════════════════
+// UTILS
+// ══════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function resetApp() {
+  state = { store:'', brand:'', supervisors:[], date:'', currentCat:0, results:{}, inspectionId: null };
+  document.querySelectorAll('.sv-tag').forEach(t => t.classList.remove('selected'));
+  document.getElementById('svCustomInput').value = '';
+  document.getElementById('svCustomInput').style.display = 'none';
+  document.getElementById('brandSelect').value = '';
+  document.getElementById('storeSelect').innerHTML = '<option value="">브랜드를 먼저 선택하세요</option>';
+  document.getElementById('storeCustomWrap').style.display = 'none';
+  document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
+  showScreen('screenSetup');
+}
+
+// ══════════════════════════════════
+// LOADING HELPERS
+// ══════════════════════════════════
+function showLoading(text = 'Supabase에 저장 중...') {
+  document.getElementById('loadingText').textContent = text;
+  document.getElementById('loadingOverlay').classList.remove('hidden');
+}
+function hideLoading() {
+  document.getElementById('loadingOverlay').classList.add('hidden');
+}
+
+// ══════════════════════════════════
+// DB CONNECTION CHECK (앱 시작 시)
+// ══════════════════════════════════
+async function checkDbConnection() {
+  const badge = document.getElementById('dbStatus');
+  badge.classList.remove('hidden');
+  badge.textContent = '● 연결 중...';
+  try {
+    await sb.select('brands', '?select=id&limit=1');
+    badge.textContent = '● DB 연결됨';
+    badge.classList.add('connected');
+    setTimeout(() => badge.classList.add('hidden'), 3000);
+  } catch(e) {
+    badge.textContent = '● DB 오류';
+    badge.classList.add('error');
+    console.warn('DB 연결 실패:', e.message);
+  }
+}
+
+// 앱 로드 시 연결 확인
+checkDbConnection();
+
+// ══════════════════════════════════
+// PHOTO FUNCTIONS
+// ══════════════════════════════════
+const STORAGE_BUCKET = 'inspection-photos';
+
+function triggerPhotoInput(key) {
+  document.getElementById(`photo-input-${key}`)?.click();
+}
+
+async function handlePhotoSelect(key, input) {
+  const files = [...input.files];
+  if (!files.length) return;
+
+  const file = files[0];
+  if (file.size > 10 * 1024 * 1024) {
+    showToast('사진 크기는 10MB 이하여야 합니다');
+    return;
+  }
+
+  // 먼저 로컬 미리보기 추가
+  const localUrl = URL.createObjectURL(file);
+  const photoKey = `${key}-${Date.now()}`;
+  addPhotoThumb(key, photoKey, localUrl, null);
+
+  // 상태에 저장
+  if (!state.results[key]) state.results[key] = {};
+  if (!state.results[key].photos) state.results[key].photos = [];
+  state.results[key].photos.push({ key: photoKey, localUrl, storagePath: null, file });
+
+  // Supabase Storage 업로드
+  setPhotoStatus(key, 'uploading', '업로드 중...');
+  try {
+    const ext = file.name.split('.').pop() || 'jpg';
+    const path = `inspections/${state.date}/${state.store}/${key}-${Date.now()}.${ext}`;
+    const uploaded = await uploadPhoto(path, file);
+    if (uploaded) {
+      // storagePath 업데이트
+      const p = state.results[key].photos.find(p => p.key === photoKey);
+      if (p) p.storagePath = path;
+      setPhotoStatus(key, 'done', `✓ ${state.results[key].photos.length}장 저장됨`);
+    } else {
+      setPhotoStatus(key, 'done', `✓ 로컬 저장 (DB 연동 후 업로드)`);
+    }
+  } catch(e) {
+    console.warn('Upload failed:', e);
+    setPhotoStatus(key, 'done', '✓ 로컬 저장 (나중에 업로드)');
+  }
+
+  // input 초기화 (같은 파일 재선택 가능하게)
+  input.value = '';
+}
+
+async function uploadPhoto(path, file) {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/storage/v1/object/${STORAGE_BUCKET}/${path}`,
+      {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': file.type,
+          'x-upsert': 'true',
+        },
+        body: file,
+      }
+    );
+    if (!res.ok) {
+      const err = await res.text();
+      console.warn('Storage upload error:', err);
+      return false;
+    }
+    return true;
+  } catch(e) {
+    console.warn('Storage upload exception:', e);
+    return false;
+  }
+}
+
+function addPhotoThumb(key, photoKey, url, storagePath) {
+  const grid = document.getElementById(`photo-grid-${key}`);
+  if (!grid) return;
+
+  // 추가 버튼 앞에 삽입
+  const addBtn = grid.querySelector('.photo-add-btn');
+  const wrap = document.createElement('div');
+  wrap.className = 'photo-thumb-wrap';
+  wrap.id = `thumb-${photoKey}`;
+  wrap.innerHTML = `
+    <img src="${url}" alt="점검사진" onclick="openPhotoModal('${url}')">
+    <button class="photo-delete-btn" onclick="deletePhoto('${key}','${photoKey}')">✕</button>
+  `;
+  grid.insertBefore(wrap, addBtn);
+}
+
+function deletePhoto(key, photoKey) {
+  // DOM 제거
+  document.getElementById(`thumb-${photoKey}`)?.remove();
+  // State 제거
+  if (state.results[key]?.photos) {
+    state.results[key].photos = state.results[key].photos.filter(p => p.key !== photoKey);
+    const count = state.results[key].photos.length;
+    setPhotoStatus(key, count > 0 ? 'done' : '', count > 0 ? `✓ ${count}장 저장됨` : '');
+  }
+}
+
+function setPhotoStatus(key, cls, text) {
+  const el = document.getElementById(`photo-status-${key}`);
+  if (!el) return;
+  el.className = `photo-upload-status${cls ? ' ' + cls : ''}`;
+  el.textContent = text;
+}
+
+function openPhotoModal(url) {
+  document.getElementById('photoModalImg').src = url;
+  document.getElementById('photoModal').classList.remove('hidden');
+}
+
+function closePhotoModal() {
+  document.getElementById('photoModal').classList.add('hidden');
+  document.getElementById('photoModalImg').src = '';
+}
+
+// 사진 포함 submit 업그레이드 - inspection_items에 photo_paths 저장
+async function savePhotosToDb(inspectionId, inspectionItemId, key) {
+  const photos = state.results[key]?.photos || [];
+  const uploaded = photos.filter(p => p.storagePath);
+  if (!uploaded.length) return;
+  try {
+    await sb.insert('inspection_photos', uploaded.map(p => ({
+      inspection_id: inspectionId,
+      inspection_item_id: inspectionItemId,
+      photo_type: 'issue',
+      storage_path: p.storagePath,
+    })));
+  } catch(e) {
+    console.warn('Photo DB save error:', e);
+  }
+}
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(() => console.log('SW registered'))
+      .catch(e => console.log('SW error:', e));
+  });
+}
+</script>
+</body>
+</html>
