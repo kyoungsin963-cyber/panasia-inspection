@@ -46,7 +46,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 .db-status-text{font-size:11px;color:rgba(255,255,255,.3);font-family:'DM Mono',monospace;}
 
 /* ══ MAIN ══ */
-.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0;overflow-x:hidden;}
 .topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 1px 4px rgba(0,0,0,.05);}
 .topbar-left{display:flex;align-items:center;gap:12px;}
 .topbar-title{font-size:16px;font-weight:800;color:var(--text);}
@@ -66,6 +66,8 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 .alert-banner.hidden{display:none;}
 .alert-banner-close{margin-left:auto;cursor:pointer;font-size:14px;color:#b91c1c;background:none;border:none;padding:2px 6px;border-radius:4px;}
 .alert-banner-close:hover{background:rgba(185,28,28,.1);}
+.alert-banner-spacer{height:40px;display:none;}
+.alert-banner-spacer.visible{display:block;}
 
 /* CONTENT */
 .content{padding:20px 24px;flex:1;}
@@ -319,27 +321,27 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 .tab-item.active{color:var(--accent);border-bottom-color:var(--accent);}
 
 /* responsive */
-@media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(3,1fr);}}
-@media(max-width:900px){
+@media(max-width:1280px){
+  :root{--sidebar-w:200px;}
+  .nav-item{font-size:12px;}
+}
+@media(max-width:1100px){
+  :root{--sidebar-w:180px;}
+  .kpi-grid{grid-template-columns:repeat(3,1fr);}
+}
+@media(max-width:960px){
+  :root{--sidebar-w:56px;}
+  .sidebar .logo-sub,.sidebar .nav-item span:not(.nav-icon),.sidebar .db-status-text,.sidebar .nav-section-label,.nav-badge,.nav-new{display:none;}
   .panel-row.cols2,.panel-row.cols3,.panel-row.c7030{grid-template-columns:1fr;}
 }
 @media(max-width:600px){
-  .sidebar{width:56px;}
-  .sidebar .logo-sub,.sidebar .nav-item span:not(.nav-icon),.sidebar .db-status-text,.sidebar .nav-section-label,.nav-badge,.nav-new{display:none;}
-  .main{margin-left:56px;}
   .kpi-grid{grid-template-columns:repeat(2,1fr);}
-  .content{padding:14px;}
+  .content{padding:12px;}
+  .topbar{padding:0 14px;}
 }
 </style>
 </head>
 <body>
-
-<!-- ALERT BANNER -->
-<div class="alert-banner hidden" id="alertBanner">
-  <span>🔔</span>
-  <span id="alertBannerText"></span>
-  <button class="alert-banner-close" onclick="document.getElementById('alertBanner').classList.add('hidden')">✕</button>
-</div>
 
 <!-- DELETE MODAL -->
 <div class="delete-modal-overlay hidden" id="deleteModal">
@@ -419,6 +421,12 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 
 <!-- MAIN -->
 <main class="main">
+  <!-- ALERT BANNER -->
+  <div class="alert-banner hidden" id="alertBanner">
+    <span>🔔</span>
+    <span id="alertBannerText"></span>
+    <button class="alert-banner-close" onclick="document.getElementById('alertBanner').classList.add('hidden')">✕</button>
+  </div>
   <div class="topbar">
     <div class="topbar-left">
       <div class="topbar-title" id="pageTitle">종합 현황</div>
