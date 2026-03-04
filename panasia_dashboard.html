@@ -856,7 +856,7 @@ body {
   <nav class="sidebar-nav">
     <div class="nav-section-label">메인</div>
     <div class="nav-item active" onclick="setPage('overview')">
-      <span class="nav-icon">📊</span> 오늘 현황
+      <span class="nav-icon">🏠</span> 종합 현황
     </div>
     <div class="nav-item" onclick="setPage('stores')">
       <span class="nav-icon">🏪</span> 매장별 점수
@@ -972,7 +972,7 @@ function setPage(page) {
   currentPage = page;
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
   event.currentTarget.classList.add('active');
-  const titles = { overview:'오늘의 점검 현황', stores:'매장별 점수', fails:'미흡 항목', trend:'트렌드 분석', history:'점검 이력', health:'매장 건강도' };
+  const titles = { overview:'종합 현황', stores:'매장별 점수', fails:'미흡 항목', trend:'트렌드 분석', history:'점검 이력', health:'매장 건강도' };
   document.getElementById('pageTitle').textContent = titles[page] || '';
   renderPage(page);
 }
@@ -985,106 +985,245 @@ function renderPage(page) {
 }
 
 // ══════════════════════════════════════════
-// PAGE: OVERVIEW
+// PAGE: OVERVIEW — 종합 현황
 // ══════════════════════════════════════════
 function renderOverview(el) {
   const today = new Date().toISOString().split('T')[0];
-  const todayInsp = (cache.inspections || []).filter(i => i.inspected_at === today);
   const allInsp = cache.inspections || [];
-  const totalStores = (cache.stores || []).length;
+  const stores  = cache.stores || [];
+  const failItems = cache.failItems || [];
 
-  const todayDone = todayInsp.length;
-  const avgScore = todayInsp.length
-    ? Math.round(todayInsp.reduce((s, i) => s + (i.score || 0), 0) / todayInsp.length)
-    : null;
-  const failCount = (cache.failItems || []).filter(i =>
-    i.inspections?.inspected_at === today).length;
-  const actionCount = (cache.failItems || []).filter(i =>
-    i.requires_action && i.inspections?.inspected_at === today).length;
+  // ── KPI 계산 ──
+  const totalStores  = stores.length;
+  const inspectedSet = new Set(allInsp.map(i => i.store_id));
+  const inspectedCount = inspectedSet.size;
+  const uninspectedCount = totalStores - inspectedCount;
+
+  // 전체 평균 점수
+  const scoredInsp = allInsp.filter(i => i.score);
+  const overallAvg = scoredInsp.length
+    ? Math.round(scoredInsp.reduce((s,i) => s + i.score, 0) / scoredInsp.length) : null;
+
+  // 위험/주의/양호 매장 수 (건강도 로직 재활용)
+  const storeHealth = calcAllStoreHealth(stores, allInsp);
+  const dangerCnt  = storeHealth.filter(s => s.status === 'danger').length;
+  const warnCnt    = storeHealth.filter(s => s.status === 'warning').length;
+  const goodCnt    = storeHealth.filter(s => s.status === 'good').length;
+  const noInspCnt  = storeHealth.filter(s => s.inspCount === 0).length;
+
+  // 즉시조치
+  const totalActions = failItems.filter(i => i.requires_action).length;
+
+  // 이번달 점검 수
+  const thisMonth = today.slice(0, 7);
+  const monthInsp = allInsp.filter(i => i.inspected_at?.startsWith(thisMonth));
+  const monthAvg  = monthInsp.length
+    ? Math.round(monthInsp.reduce((s,i) => s+(i.score||0),0)/monthInsp.filter(i=>i.score).length) : null;
+
+  // 최근 점검 (5건)
   const recentInsp = allInsp.slice(0, 5);
 
-  el.innerHTML = `
-  <div class="fade-in">
-    <div class="kpi-grid">
+  // 브랜드별 집계
+  const brandMap = {};
+  allInsp.forEach(i => {
+    const bn = i.stores?.brands?.name;
+    if (!bn || !i.score) return;
+    if (!brandMap[bn]) brandMap[bn] = { scores:[], storeSet: new Set() };
+    brandMap[bn].scores.push(i.score);
+    if (i.store_id) brandMap[bn].storeSet.add(i.store_id);
+  });
+
+  el.innerHTML = `<div class="fade-in">
+
+    <!-- ── 상단 KPI 6개 ── -->
+    <div class="kpi-grid" style="grid-template-columns:repeat(6,1fr)">
       <div class="kpi-card">
-        <div class="kpi-label">오늘 점검 완료</div>
-        <div class="kpi-value accent">${todayDone}</div>
-        <div class="kpi-sub">/ ${totalStores} 매장</div>
+        <div class="kpi-label">전체 매장</div>
+        <div class="kpi-value accent">${totalStores}</div>
+        <div class="kpi-sub">점검 대상</div>
       </div>
-      <div class="kpi-card ${avgScore >= 80 ? 'good' : avgScore >= 60 ? 'warn' : avgScore ? 'poor' : ''}">
-        <div class="kpi-label">오늘 평균 점수</div>
-        <div class="kpi-value ${avgScore >= 80 ? 'good' : avgScore >= 60 ? 'warn' : avgScore ? 'poor' : ''}">${avgScore !== null ? avgScore + '%' : '-'}</div>
-        <div class="kpi-sub">${todayInsp.length ? '점검 기반' : '점검 없음'}</div>
+      <div class="kpi-card ${overallAvg >= 80 ? 'good' : overallAvg >= 60 ? 'warn' : overallAvg ? 'poor' : ''}">
+        <div class="kpi-label">전체 평균 점수</div>
+        <div class="kpi-value ${overallAvg >= 80 ? 'good' : overallAvg >= 60 ? 'warn' : overallAvg ? 'poor' : ''}">${overallAvg !== null ? overallAvg + '%' : '-'}</div>
+        <div class="kpi-sub">${scoredInsp.length}회 점검 기반</div>
+      </div>
+      <div class="kpi-card ${monthAvg >= 80 ? 'good' : monthAvg >= 60 ? 'warn' : monthAvg ? 'poor' : ''}">
+        <div class="kpi-label">이번달 평균</div>
+        <div class="kpi-value ${monthAvg >= 80 ? 'good' : monthAvg >= 60 ? 'warn' : monthAvg ? 'poor' : ''}">${monthAvg !== null ? monthAvg + '%' : '-'}</div>
+        <div class="kpi-sub">${monthInsp.length}회 점검</div>
       </div>
       <div class="kpi-card poor">
-        <div class="kpi-label">오늘 미흡 항목</div>
-        <div class="kpi-value poor">${failCount}</div>
-        <div class="kpi-sub">건 발생</div>
+        <div class="kpi-label">위험 매장</div>
+        <div class="kpi-value poor">${dangerCnt}</div>
+        <div class="kpi-sub">즉시 관리 필요</div>
       </div>
       <div class="kpi-card warn">
-        <div class="kpi-label">즉시조치 필요</div>
-        <div class="kpi-value warn">${actionCount}</div>
-        <div class="kpi-sub">긴급 항목</div>
+        <div class="kpi-label">즉시조치 항목</div>
+        <div class="kpi-value warn">${totalActions}</div>
+        <div class="kpi-sub">긴급 처리 필요</div>
       </div>
-      <div class="kpi-card blue">
-        <div class="kpi-label">누적 점검</div>
-        <div class="kpi-value" style="color:var(--blue)">${allInsp.length}</div>
-        <div class="kpi-sub">전체 이력</div>
+      <div class="kpi-card">
+        <div class="kpi-label">미점검 매장</div>
+        <div class="kpi-value" style="color:var(--text-muted)">${uninspectedCount}</div>
+        <div class="kpi-sub">점검 필요</div>
       </div>
     </div>
 
+    <!-- ── 매장 상태 요약 바 ── -->
+    <div class="panel" style="margin-bottom:16px">
+      <div class="panel-body" style="padding:16px 24px">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <span style="font-size:12px;font-weight:800;color:var(--text-muted);letter-spacing:0.05em;min-width:80px">매장 상태</span>
+          <div style="flex:1;display:flex;height:18px;border-radius:999px;overflow:hidden;min-width:200px;border:1px solid var(--border)">
+            ${dangerCnt ? `<div style="width:${dangerCnt/totalStores*100}%;background:#dc2626;transition:width 0.6s"></div>` : ''}
+            ${warnCnt   ? `<div style="width:${warnCnt/totalStores*100}%;background:#d97706"></div>` : ''}
+            ${goodCnt   ? `<div style="width:${goodCnt/totalStores*100}%;background:#16a34a"></div>` : ''}
+            ${noInspCnt ? `<div style="width:${noInspCnt/totalStores*100}%;background:#e5e7eb"></div>` : ''}
+          </div>
+          <div style="display:flex;gap:16px;flex-wrap:wrap">
+            <span style="font-size:12px;font-weight:700;color:#dc2626">🔴 위험 ${dangerCnt}</span>
+            <span style="font-size:12px;font-weight:700;color:#d97706">🟡 주의 ${warnCnt}</span>
+            <span style="font-size:12px;font-weight:700;color:#16a34a">🟢 양호 ${goodCnt}</span>
+            <span style="font-size:12px;font-weight:700;color:#9ca3af">⚪ 미점검 ${noInspCnt}</span>
+          </div>
+          <button onclick="setPageDirect('health')"
+            style="padding:6px 14px;background:var(--accent);color:#fff;border:none;border-radius:8px;
+                   font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif">
+            상세 보기 →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 2열 레이아웃 ── -->
     <div class="grid-3">
-      <div class="panel">
+
+      <!-- 최근 점검 -->
+      <div class="panel" style="grid-column:span 2">
         <div class="panel-header">
           <div class="panel-title">최근 점검 내역</div>
           <div class="panel-badge">${recentInsp.length}건</div>
         </div>
         <div class="panel-body" style="padding:0">
           ${recentInsp.length === 0
-            ? `<div class="empty-state"><div class="empty-state-icon">📋</div><div class="empty-state-text">아직 점검 데이터가 없습니다.<br>슈퍼바이저 앱에서 점검을 완료하면<br>여기에 표시됩니다.</div></div>`
+            ? `<div class="empty-state"><div class="empty-state-icon">📋</div><div class="empty-state-text">아직 점검 데이터가 없습니다</div></div>`
             : `<table class="store-table">
-              <thead><tr>
-                <th>매장</th><th>브랜드</th><th>날짜</th><th>점수</th><th>상태</th>
-              </tr></thead>
-              <tbody>
-                ${recentInsp.map(i => {
-                  const score = i.score;
-                  const scoreClass = score >= 80 ? 'high' : score >= 60 ? 'mid' : score ? 'low' : 'none';
-                  const scoreText = score ? Math.round(score) + '%' : '-';
-                  return `<tr class="clickable-row" onclick="openDetail('${i.id}')">
-                    <td style="font-weight:700">${i.stores?.name || '-'}</td>
-                    <td style="color:var(--text-dim)">${i.stores?.brands?.name || '-'}</td>
-                    <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text-dim)">${i.inspected_at}</td>
-                    <td><span class="score-pill ${scoreClass}">${scoreText}</span></td>
-                    <td style="color:var(--blue);font-size:12px;font-weight:700;">상세보기 →</td>
-                  </tr>`;
-                }).join('')}
-              </tbody>
-            </table>`
-          }
+              <thead><tr><th>매장</th><th>브랜드</th><th>날짜</th><th>점수</th><th>상태</th></tr></thead>
+              <tbody>${recentInsp.map(i => {
+                const score = i.score;
+                const sc = score >= 80 ? 'high' : score >= 60 ? 'mid' : score ? 'low' : 'none';
+                return `<tr class="clickable-row" onclick="openDetail('${i.id}')">
+                  <td style="font-weight:700">${i.stores?.name||'-'}</td>
+                  <td style="color:var(--text-dim)">${i.stores?.brands?.name||'-'}</td>
+                  <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text-dim)">${i.inspected_at}</td>
+                  <td><span class="score-pill ${sc}">${score ? Math.round(score)+'%' : '-'}</span></td>
+                  <td style="color:var(--blue);font-size:12px;font-weight:700">상세보기 →</td>
+                </tr>`;
+              }).join('')}</tbody>
+            </table>`}
         </div>
       </div>
+
+      <!-- 브랜드별 점수 -->
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">브랜드별 평균 점수</div></div>
+        <div class="panel-body">${renderBrandBars()}</div>
+      </div>
+    </div>
+
+    <!-- ── 하단 2열 ── -->
+    <div class="grid-3" style="margin-top:0">
+
+      <!-- 즉시조치 -->
+      <div class="panel" style="grid-column:span 2">
+        <div class="panel-header">
+          <div class="panel-title">⚠️ 즉시조치 필요 항목</div>
+          <div class="panel-badge">${totalActions}건</div>
+        </div>
+        <div class="panel-body scroll-y" style="max-height:220px">${renderActionItems()}</div>
+      </div>
+
+      <!-- 위험 매장 TOP -->
       <div class="panel">
         <div class="panel-header">
-          <div class="panel-title">브랜드별 평균 점수</div>
+          <div class="panel-title">🔴 위험 매장</div>
+          <div class="panel-badge">${dangerCnt}개</div>
         </div>
-        <div class="panel-body">
-          ${renderBrandBars()}
+        <div class="panel-body" style="padding:0">
+          ${dangerCnt === 0
+            ? `<div class="empty-state"><div class="empty-state-icon">✅</div><div class="empty-state-text">위험 매장 없음</div></div>`
+            : `<div>${storeHealth.filter(s=>s.status==='danger').slice(0,6).map(s => `
+              <div style="display:flex;align-items:center;justify-content:space-between;
+                          padding:11px 16px;border-bottom:1px solid var(--border);cursor:pointer"
+                   onclick="setPageDirect('health')">
+                <div>
+                  <div style="font-size:13px;font-weight:800;color:var(--text)">${s.store.name}</div>
+                  <div style="font-size:11px;color:var(--text-muted)">${s.store.brands?.name||''}</div>
+                </div>
+                <div style="text-align:right">
+                  <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:#dc2626;line-height:1">${s.health}</div>
+                  <div style="font-size:10px;color:var(--text-muted)">건강도</div>
+                </div>
+              </div>`).join('')}
+            </div>`}
         </div>
       </div>
     </div>
 
-    <div class="panel">
-      <div class="panel-header">
-        <div class="panel-title">⚠️ 즉시조치 필요 항목</div>
-        <div class="panel-badge">${actionCount}건</div>
-      </div>
-      <div class="panel-body scroll-y" style="max-height:220px">
-        ${renderActionItems()}
-      </div>
-    </div>
   </div>`;
 }
+
+// 직접 페이지 이동 (event 없이)
+function setPageDirect(page) {
+  currentPage = page;
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  const navItems = document.querySelectorAll('.nav-item');
+  const titles = { overview:'종합 현황', stores:'매장별 점수', fails:'미흡 항목', trend:'트렌드 분석', history:'점검 이력', health:'매장 건강도' };
+  // 해당 페이지 nav 활성화
+  navItems.forEach(el => {
+    if (el.getAttribute('onclick')?.includes(page)) el.classList.add('active');
+  });
+  document.getElementById('pageTitle').textContent = titles[page] || '';
+  renderPage(page);
+}
+
+// 건강도 계산 공유 함수
+function calcAllStoreHealth(stores, allInsp) {
+  return stores.map(store => {
+    const storeInsps = allInsp.filter(i => i.store_id === store.id)
+      .sort((a,b) => b.inspected_at.localeCompare(a.inspected_at));
+    const latest = storeInsps[0];
+    const scores = storeInsps.map(i => i.score||0).filter(s => s > 0);
+    const recentScores = scores.slice(0,6).reverse();
+    let health = 0;
+    const daysSince = latest
+      ? Math.floor((new Date() - new Date(latest.inspected_at)) / 86400000) : 999;
+
+    if (!latest || storeInsps.length === 0) {
+      health = 0;
+    } else {
+      health = Math.round(latest.score || 0);
+      const actionCount = latest.action_count || 0;
+      if (actionCount > 0) health = Math.max(0, health - actionCount * 5);
+      const failCount = latest.fail_count || 0;
+      if (failCount >= 10) health = Math.max(0, health - 5);
+      if (recentScores.length >= 3) {
+        const first = recentScores.slice(0, Math.ceil(recentScores.length/2));
+        const last  = recentScores.slice(Math.ceil(recentScores.length/2));
+        const avgFirst = first.reduce((a,b)=>a+b,0)/first.length;
+        const avgLast  = last.reduce((a,b)=>a+b,0)/last.length;
+        const trend = ((avgLast - avgFirst) / (avgFirst||1)) * 100;
+        if (trend <= -15) health = Math.max(0, health - 8);
+      }
+      if (daysSince > 60) health = Math.max(0, health - 15);
+      else if (daysSince > 30) health = Math.max(0, health - 5);
+    }
+    health = Math.max(0, Math.min(100, health));
+    const status = health >= 80 ? 'good' : health >= 60 ? 'warning' : 'danger';
+    return { store, health, status, inspCount: storeInsps.length, latest };
+  });
+}
+
 
 function renderBrandBars() {
   const insp = cache.inspections || [];
