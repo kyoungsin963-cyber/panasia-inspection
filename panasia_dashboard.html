@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root {
   --bg:         #f0f2f5;
@@ -1429,46 +1430,128 @@ function downloadExcel() {
 
   const storeName = insp.stores?.name || '';
   const brand = insp.stores?.brands?.name || '';
-  const date = insp.inspected_at || '';
+  const date = (insp.inspected_at || '').replace(/-/g, '.');
+  const score = insp.score ? Math.round(insp.score) + '%' : '-';
+  const passCnt = insp.pass_count ?? 0;
+  const failCnt = insp.fail_count ?? 0;
 
-  // CSV 생성 (한글 엑셀 호환)
-  const BOM = '﻿';
-  const headers = ['번호','카테고리','항목명','결과','메모','즉시조치'];
-  const rows = items.map((item, idx) => {
-    const cat = item.checklist_items?.checklist_categories?.name_ko || '-';
-    const title = item.checklist_items?.title || item.note || '-';
-    const result = item.result === 'good' || item.result === 'pass' ? '우수/적합'
-      : item.result === 'poor' || item.result === 'fail' ? '미흡/부적합'
-      : '미점검';
-    const note = (item.note || '').replace(/,/g, ' ');
-    const action = item.requires_action ? '필요' : '';
-    return [idx+1, cat, title, result, note, action];
+  const wb = XLSX.utils.book_new();
+  const ws = {};
+  const merges = [];
+  ws['!cols'] = [{wch:2},{wch:6},{wch:30},{wch:40},{wch:14},{wch:32},{wch:2},{wch:2}];
+  ws['!rows'] = [];
+
+  let r = 0;
+
+  function setCell(row, col, value, s) {
+    const addr = XLSX.utils.encode_cell({r:row, c:col});
+    ws[addr] = { v: value, t: typeof value === 'number' ? 'n' : 's', s: s || {} };
+  }
+  function mg(r1,c1,r2,c2) { merges.push({s:{r:r1,c:c1},e:{r:r2,c:c2}}); }
+  function border() { return {top:{style:'thin'},bottom:{style:'thin'},left:{style:'thin'},right:{style:'thin'}}; }
+  function cs(bg,fc,bold,wrap) {
+    return { font:{name:'\uB9D1\uC740 \uACE0\uB515',sz:10,bold:!!bold,color:{rgb:fc||'111827'}},
+             fill:{fgColor:{rgb:bg||'FFFFFF'}},
+             alignment:{vertical:'center',wrapText:!!wrap},
+             border:border() };
+  }
+
+  // 1행: 타이틀
+  mg(r,0,r,7);
+  setCell(r,0,'PANASIA DINEHILL SANITATION REPORT',
+    {font:{name:'\uB9D1\uC740 \uACE0\uB515',bold:true,sz:14,color:{rgb:'FFFFFF'}},
+     fill:{fgColor:{rgb:'1A1A2E'}},alignment:{horizontal:'center',vertical:'center'}});
+  ws['!rows'][r] = {hpt:38}; r++;
+
+  // 2~4행: 정보
+  [['\ub9e4\uc7a5\uba85',`${brand} ${storeName}`],['\uc810\uac80\uc77c\uc790',date],['\uc810\uac80\uc790','\ubcf8\uc0ac']].forEach(([lbl,val]) => {
+    ws['!rows'][r] = {hpt:20};
+    mg(r,0,r,3);
+    setCell(r,0,'',{fill:{fgColor:{rgb:'F8F9FA'}}});
+    setCell(r,4,`   ${lbl} :`,{font:{name:'\uB9D1\uC740 \uACE0\uB515',sz:10,color:{rgb:'6B7280'}},alignment:{horizontal:'right',vertical:'center'}});
+    setCell(r,5,val,{font:{name:'\uB9D1\uC740 \uACE0\uB515',bold:true,sz:10},alignment:{vertical:'center'}});
+    r++;
   });
 
-  // 요약 헤더
-  const summary = [
-    [`점검 보고서`],
-    [`매장`, `${brand} ${storeName}`],
-    [`점검일`, date],
-    [`최종점수`, `${insp.score ? Math.round(insp.score) : 0}%`],
-    [`우수/적합`, insp.pass_count ?? 0],
-    [`미흡/부적합`, insp.fail_count ?? 0],
-    [`총평`, insp.comment || ''],
-    [],
-    headers,
-    ...rows
-  ];
+  // 5행: 점수요약
+  ws['!rows'][r] = {hpt:26};
+  function ss(bg,fc) { return {font:{name:'\uB9D1\uC740 \uACE0\uB515',bold:true,sz:11,color:{rgb:fc}},fill:{fgColor:{rgb:bg}},alignment:{horizontal:'center',vertical:'center'}}; }
+  mg(r,0,r,2); setCell(r,0,`\uc810\uc218 : ${score}`, ss('1E3A5F','FFFFFF'));
+  mg(r,3,r,4); setCell(r,3,`\uc801\ud569 : ${passCnt}\uac74`, ss('166534','FFFFFF'));
+  mg(r,5,r,7); setCell(r,5,`\ubbf8\ud761 : ${failCnt}\uac74`, ss('B91C1C','FFFFFF'));
+  r++; r++;
 
-  const csv = BOM + summary.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `점검보고서_${brand}_${storeName}_${date}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
+  const catColors = {
+    '\uae30\ubcf8\ubd84\uc57c':             {hdr:'1E3A5F',row:'DBEAFE'},
+    '\uace0\uac1d\ub3d9\uc120 \ubc0f \uac1d\uc11d':     {hdr:'166534',row:'DCFCE7'},
+    '\uc8fc\ubc29 \ubc0f \uc74c\uc2dd\uc81c\uc870\uad6c\uc5ed': {hdr:'92400E',row:'FEF3C7'},
+    'Hall Service':         {hdr:'4C1D95',row:'EDE9FE'},
+    'Menu Quality':         {hdr:'831843',row:'FCE7F3'},
+  };
+
+  let currentCat = '';
+
+  items.forEach((item, idx) => {
+    const cat = item.checklist_items?.checklist_categories?.name_ko || item.checklist_items?.checklist_categories?.section || '';
+    const title = item.checklist_items?.title || item.note || '-';
+    const note = item.note && item.note !== '-' ? item.note : '';
+    const isAction = item.requires_action;
+    const isFail = item.result === 'poor' || item.result === 'fail';
+    const isPass = item.result === 'good' || item.result === 'pass';
+    const resTxt = isFail ? (item.result==='poor'?'\ubbf8  \ud761':'\ubd80\uc801\ud569') : isPass ? (item.result==='good'?'\uc6b0  \uc218':'\uc801  \ud569') : '\ubbf8\uc810\uac80';
+    const resBg = isFail?'FEF2F2':isPass?'F0FDF4':'F9FAFB';
+    const resFc = isFail?'B91C1C':isPass?'166534':'9CA3AF';
+    const colors = catColors[cat] || {hdr:'374151',row:'F9FAFB'};
+
+    if (cat !== currentCat) {
+      currentCat = cat;
+      ws['!rows'][r] = {hpt:22};
+      mg(r,0,r,7);
+      setCell(r,0,`  \u25a1 ${cat}`,
+        {font:{name:'\uB9D1\uC740 \uACE0\uB515',bold:true,sz:11,color:{rgb:'FFFFFF'}},
+         fill:{fgColor:{rgb:colors.hdr}},alignment:{vertical:'center'}});
+      r++;
+      ws['!rows'][r] = {hpt:18};
+      ['','\ubc88\ud638','\ud3c9\uac00\ud56d\ubaa9','\ud3c9\uac00\uae30\uc900','\uacb0\uacfc','\uc9c0\uc801\uc0ac\ud56d','',''].forEach((h,ci) => {
+        setCell(r,ci,h,{font:{name:'\uB9D1\uC740 \uACE0\uB515',bold:true,sz:9,color:{rgb:'374151'}},fill:{fgColor:{rgb:'E5E7EB'}},alignment:{horizontal:'center',vertical:'center'},border:border()});
+      });
+      r++;
+    }
+
+    ws['!rows'][r] = {hpt:30};
+    setCell(r,0,'',cs('FFFFFF'));
+    setCell(r,1,item.checklist_items?.item_number||(idx+1),cs(colors.row,'111827',true));
+    setCell(r,2,title,cs('FFFFFF','111827',false,true));
+    setCell(r,3,'',cs('FAFAFA'));
+    setCell(r,4,resTxt,cs(resBg,resFc,true));
+    let noteText = note;
+    if (isAction) noteText = noteText ? '\ud83d\udea8 '+noteText : '\ud83d\udea8 \uc989\uc2dc\uc870\uce58 \ud544\uc694';
+    setCell(r,5,noteText,cs(isFail?'FEF2F2':'FFFFFF',(isFail||isAction)?'B91C1C':'374151',false,true));
+    setCell(r,6,'',cs('FFFFFF')); setCell(r,7,'',cs('FFFFFF'));
+    r++;
+  });
+
+  // 총평
+  r++;
+  ws['!rows'][r] = {hpt:22};
+  mg(r,0,r,7);
+  setCell(r,0,'  \u25a1 \uc635\ud3c9',
+    {font:{name:'\uB9D1\uC740 \uACE0\uB515',bold:true,sz:11,color:{rgb:'FFFFFF'}},
+     fill:{fgColor:{rgb:'374151'}},alignment:{vertical:'center'}});
+  r++;
+  ws['!rows'][r] = {hpt:60};
+  mg(r,0,r,7);
+  setCell(r,0,insp.comment||'(\uc880\ud3c9 \uc5c6\uc74c)',
+    {font:{name:'\uB9D1\uC740 \uACE0\uB515',sz:10},
+     alignment:{vertical:'top',wrapText:true},border:border()});
+  r++;
+
+  ws['!ref'] = XLSX.utils.encode_range({s:{r:0,c:0},e:{r:r,c:7}});
+  ws['!merges'] = merges;
+  XLSX.utils.book_append_sheet(wb,'\uc810\uac80\uacb0\uacfc', ws);
+  const dateStr = (insp.inspected_at||'').replace(/-/g,'');
+  XLSX.writeFile(wb, `\ud32c\uc544\uc2dc\uc544\ub2e4\uc778\ud790_\uc810\uac80\ub9ac\uc2a4\ud2b8_${brand}_${storeName}_${dateStr}.xlsx`);
 }
-
 // ══════════════════════════════════════════
 // 후조치
 // ══════════════════════════════════════════
