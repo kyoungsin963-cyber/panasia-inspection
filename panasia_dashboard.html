@@ -608,6 +608,118 @@ body {
 }
 .toggle-expand-btn:hover { background: var(--blue-bg); border-color: var(--blue); }
 
+/* ── 건강도 카드 ── */
+.health-filters {
+  display: flex; gap: 8px; align-items: center;
+  margin-bottom: 20px; flex-wrap: wrap;
+}
+.health-filter-btn {
+  padding: 7px 16px; border-radius: 20px;
+  border: 1.5px solid var(--border2);
+  background: var(--surface); color: var(--text-dim);
+  font-size: 12px; font-weight: 700;
+  cursor: pointer; font-family: 'Noto Sans KR', sans-serif;
+  transition: all 0.15s;
+}
+.health-filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+.health-filter-btn.active { background: #1e2433; color: #fff; border-color: #1e2433; }
+.health-filter-btn.danger.active  { background: #dc2626; border-color: #dc2626; color: #fff; }
+.health-filter-btn.warning.active { background: #d97706; border-color: #d97706; color: #fff; }
+.health-filter-btn.good.active    { background: #16a34a; border-color: #16a34a; color: #fff; }
+
+.health-sort-btn {
+  padding: 7px 14px; border-radius: 20px;
+  border: 1.5px solid var(--border2);
+  background: var(--surface); color: var(--text-dim);
+  font-size: 12px; font-weight: 600;
+  cursor: pointer; font-family: 'Noto Sans KR', sans-serif;
+  transition: all 0.15s;
+}
+.health-sort-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+.health-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+@media (max-width: 1200px) { .health-grid { grid-template-columns: repeat(2,1fr); } }
+
+.health-card {
+  background: var(--surface);
+  border-radius: 16px;
+  border: 2px solid var(--border);
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+  animation: fadeIn 0.4s ease both;
+}
+.health-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+.health-card.danger  { border-color: #fca5a5; }
+.health-card.warning { border-color: #fcd34d; }
+.health-card.good    { border-color: #86efac; }
+
+.health-card-top {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 4px;
+}
+.health-card-name { font-size: 17px; font-weight: 900; color: var(--text); }
+.health-card-brand { font-size: 12px; color: var(--text-muted); margin-bottom: 2px; }
+.health-card-date  { font-size: 11px; color: var(--text-muted); font-family: 'DM Mono',monospace; }
+.health-score {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 52px; line-height: 1;
+  min-width: 72px; text-align: right;
+}
+.health-score-label {
+  font-size: 11px; font-weight: 700; color: var(--text-muted);
+  text-align: right; margin-top: 2px;
+}
+.health-score.danger  { color: #dc2626; }
+.health-score.warning { color: #d97706; }
+.health-score.good    { color: #16a34a; }
+
+/* 미니 스파크라인 */
+.health-sparkline {
+  width: 100%; height: 44px; margin: 12px 0 8px;
+}
+
+.health-stats {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 0; border-top: 1px solid var(--border); padding-top: 12px;
+  margin-bottom: 12px;
+}
+.health-stat { text-align: center; }
+.health-stat + .health-stat { border-left: 1px solid var(--border); }
+.health-stat-label { font-size: 10px; font-weight: 700; color: var(--text-muted); letter-spacing:0.05em; text-transform:uppercase; margin-bottom:3px; }
+.health-stat-value { font-size: 16px; font-weight: 900; }
+.health-stat-value.red   { color: #dc2626; }
+.health-stat-value.orange{ color: #d97706; }
+.health-stat-value.green { color: #16a34a; }
+.health-stat-value.gray  { color: var(--text-muted); }
+
+.health-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.health-tag {
+  font-size: 11px; font-weight: 700;
+  padding: 3px 10px; border-radius: 20px;
+  display: flex; align-items: center; gap: 4px;
+}
+.health-tag.red    { background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; }
+.health-tag.orange { background:#fffbeb; color:#b45309; border:1px solid #fde68a; }
+.health-tag.blue   { background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; }
+.health-tag.gray   { background:#f3f4f6; color:#6b7280; border:1px solid #e5e7eb; }
+.health-tag.green  { background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0; }
+
+.health-card-accent {
+  position:absolute; top:0; right:0;
+  width:4px; height:100%;
+  border-radius: 0 14px 14px 0;
+}
+.health-card.danger  .health-card-accent { background: #dc2626; }
+.health-card.warning .health-card-accent { background: #d97706; }
+.health-card.good    .health-card-accent { background: #16a34a; }
+
 /* ── 후조치 PANEL ── */
 .action-panel {
   margin-top: 24px;
@@ -669,6 +781,37 @@ body {
 </head>
 <body>
 
+<!-- DELETE CONFIRM MODAL -->
+<div class="modal-overlay hidden" id="deleteModal" onclick="if(event.target===this)closeDeleteModal()">
+  <div class="modal-box" style="max-width:420px;margin-top:120px">
+    <div class="modal-header" style="background:#7f1d1d;padding:20px 24px">
+      <div>
+        <div class="modal-store-name" style="font-size:16px">⚠️ 점검 기록 삭제</div>
+        <div style="color:rgba(255,255,255,0.6);font-size:13px;margin-top:4px" id="deleteModalDesc"></div>
+      </div>
+      <button class="modal-close" onclick="closeDeleteModal()">✕</button>
+    </div>
+    <div style="padding:24px 28px">
+      <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:16px;margin-bottom:20px">
+        <div style="font-size:13px;color:#7f1d1d;line-height:1.7">
+          이 점검 기록을 삭제하면 <strong>복구할 수 없습니다.</strong><br>
+          연결된 항목 데이터도 함께 삭제됩니다.
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end">
+        <button onclick="closeDeleteModal()"
+          style="padding:10px 20px;border:1.5px solid var(--border2);border-radius:8px;
+                 background:var(--surface);color:var(--text);font-size:13px;font-weight:700;
+                 cursor:pointer;font-family:'Noto Sans KR',sans-serif">취소</button>
+        <button id="deleteConfirmBtn" onclick="executeDelete()"
+          style="padding:10px 20px;border:none;border-radius:8px;
+                 background:#dc2626;color:#fff;font-size:13px;font-weight:700;
+                 cursor:pointer;font-family:'Noto Sans KR',sans-serif">삭제 확인</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- DETAIL MODAL -->
 <div class="modal-overlay hidden" id="detailModal" onclick="closeDetailOnBg(event)">
   <div class="modal-box" id="detailBox">
@@ -723,6 +866,9 @@ body {
     </div>
     <div class="nav-item" onclick="setPage('trend')">
       <span class="nav-icon">📈</span> 트렌드
+    </div>
+    <div class="nav-item" onclick="setPage('health')">
+      <span class="nav-icon">🏥</span> 매장 건강도
     </div>
     <div class="nav-section-label">관리</div>
     <div class="nav-item" onclick="setPage('history')">
@@ -826,7 +972,7 @@ function setPage(page) {
   currentPage = page;
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
   event.currentTarget.classList.add('active');
-  const titles = { overview:'오늘의 점검 현황', stores:'매장별 점수', fails:'미흡 항목', trend:'트렌드 분석', history:'점검 이력' };
+  const titles = { overview:'오늘의 점검 현황', stores:'매장별 점수', fails:'미흡 항목', trend:'트렌드 분석', history:'점검 이력', health:'매장 건강도' };
   document.getElementById('pageTitle').textContent = titles[page] || '';
   renderPage(page);
 }
@@ -834,7 +980,7 @@ function setPage(page) {
 function renderPage(page) {
   const el = document.getElementById('pageContent');
   el.innerHTML = '';
-  const pages = { overview: renderOverview, stores: renderStores, fails: renderFails, trend: renderTrend, history: renderHistory };
+  const pages = { overview: renderOverview, stores: renderStores, fails: renderFails, trend: renderTrend, history: renderHistory, health: renderHealth };
   if (pages[page]) pages[page](el);
 }
 
@@ -1191,6 +1337,326 @@ function drawCharts() {
   });
 }
 
+
+// ══════════════════════════════════════════
+// PAGE: HEALTH — 매장 건강도
+// ══════════════════════════════════════════
+let healthFilter = 'all';
+let healthSort = 'health';
+
+function renderHealth(el) {
+  const stores = cache.stores || [];
+  const inspections = cache.inspections || [];
+
+  // ── 매장별 데이터 집계 ──
+  const storeData = stores.map(store => {
+    const storeInsps = inspections
+      .filter(i => i.store_id === store.id)
+      .sort((a,b) => b.inspected_at.localeCompare(a.inspected_at));
+
+    const latest = storeInsps[0];
+    const scores = storeInsps.map(i => i.score || 0).filter(s => s > 0);
+    const recentScores = scores.slice(0, 6).reverse(); // 최근 6회, 시간순
+
+    // 건강도 계산
+    let health = 0;
+    const tags = [];
+    const daysSince = latest
+      ? Math.floor((new Date() - new Date(latest.inspected_at)) / 86400000)
+      : 999;
+
+    if (!latest || storeInsps.length === 0) {
+      health = 0;
+      tags.push({ label:'미점검', cls:'gray' });
+    } else {
+      const baseScore = latest.score || 0;
+      health = Math.round(baseScore);
+
+      // 즉시조치 페널티
+      const actionCount = latest.action_count || 0;
+      if (actionCount > 0) {
+        health = Math.max(0, health - actionCount * 5);
+        tags.push({ label:`⚡ 즉시조치 ${actionCount}건`, cls:'red' });
+      }
+
+      // 미흡 항목 페널티
+      const failCount = latest.fail_count || 0;
+      if (failCount >= 10) {
+        health = Math.max(0, health - 5);
+        tags.push({ label:`⚡ 미흡과다 (${failCount}건)`, cls:'red' });
+      } else if (failCount >= 5) {
+        tags.push({ label:`⚡ 미흡 다수 (${failCount}건)`, cls:'orange' });
+      }
+
+      // 추세 계산
+      if (recentScores.length >= 3) {
+        const first = recentScores.slice(0, Math.ceil(recentScores.length/2));
+        const last  = recentScores.slice(Math.ceil(recentScores.length/2));
+        const avgFirst = first.reduce((a,b)=>a+b,0)/first.length;
+        const avgLast  = last.reduce((a,b)=>a+b,0)/last.length;
+        const trend = ((avgLast - avgFirst) / avgFirst) * 100;
+        if (trend <= -15) {
+          health = Math.max(0, health - 8);
+          tags.push({ label:`⚡ 급락 추세 (${trend.toFixed(1)}%)`, cls:'red' });
+        } else if (trend <= -8) {
+          tags.push({ label:`⚡ 하락 추세 (${trend.toFixed(1)}%)`, cls:'orange' });
+        } else if (trend >= 10) {
+          tags.push({ label:`📈 상승 추세 (+${trend.toFixed(1)}%)`, cls:'green' });
+        }
+      }
+
+      // 점검 주기 페널티
+      if (daysSince > 60) {
+        health = Math.max(0, health - 15);
+        tags.push({ label:`⚡ 장기 미점검 (${daysSince}일)`, cls:'red' });
+      } else if (daysSince > 30) {
+        health = Math.max(0, health - 5);
+        tags.push({ label:`⚡ 점검 필요 (${daysSince}일 전)`, cls:'orange' });
+      }
+
+      // 데이터 부족
+      if (storeInsps.length < 3) {
+        tags.push({ label:`데이터 부족 (${storeInsps.length}회)`, cls:'gray' });
+      }
+    }
+
+    health = Math.max(0, Math.min(100, health));
+    const status = health >= 80 ? 'good' : health >= 60 ? 'warning' : 'danger';
+
+    // 추세값
+    const avgScore = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : 0;
+    const trendVal = (recentScores.length >= 2)
+      ? ((recentScores[recentScores.length-1] - recentScores[0]) / recentScores[0] * 100)
+      : 0;
+
+    return {
+      store, latest, storeInsps, scores: recentScores,
+      health, status, tags, avgScore, trendVal,
+      failCount: latest?.fail_count || 0,
+      actionCount: latest?.action_count || 0,
+      daysSince, inspCount: storeInsps.length
+    };
+  });
+
+  // ── 필터/정렬 ──
+  let filtered = storeData.filter(d => {
+    if (healthFilter === 'danger')  return d.status === 'danger';
+    if (healthFilter === 'warning') return d.status === 'warning';
+    if (healthFilter === 'good')    return d.status === 'good';
+    return true;
+  });
+
+  if (healthSort === 'health') {
+    filtered.sort((a,b) => a.health - b.health); // 낮은 순
+  } else if (healthSort === 'score') {
+    filtered.sort((a,b) => (b.latest?.score||0) - (a.latest?.score||0));
+  } else if (healthSort === 'trend') {
+    filtered.sort((a,b) => a.trendVal - b.trendVal);
+  }
+
+  const dangerCnt  = storeData.filter(d => d.status==='danger').length;
+  const warnCnt    = storeData.filter(d => d.status==='warning').length;
+  const goodCnt    = storeData.filter(d => d.status==='good').length;
+  const noDataCnt  = storeData.filter(d => d.inspCount === 0).length;
+
+  el.innerHTML = `
+    <div class="health-filters">
+      <span style="font-size:12px;font-weight:700;color:var(--text-muted);margin-right:4px">상태</span>
+      <button class="health-filter-btn active" id="hf-all"   onclick="setHealthFilter('all',this)">전체 ${storeData.length}</button>
+      <button class="health-filter-btn danger"  id="hf-danger"  onclick="setHealthFilter('danger',this)">🔴 위험 ${dangerCnt}</button>
+      <button class="health-filter-btn warning" id="hf-warning" onclick="setHealthFilter('warning',this)">🟡 주의 ${warnCnt}</button>
+      <button class="health-filter-btn good"    id="hf-good"    onclick="setHealthFilter('good',this)">🟢 양호 ${goodCnt}</button>
+      <div style="width:1px;height:24px;background:var(--border);margin:0 4px"></div>
+      <span style="font-size:12px;font-weight:700;color:var(--text-muted);margin-right:4px">정렬</span>
+      <button class="health-sort-btn active" id="hs-health" onclick="setHealthSort('health',this)">건강도순</button>
+      <button class="health-sort-btn"        id="hs-score"  onclick="setHealthSort('score',this)">점수순</button>
+      <button class="health-sort-btn"        id="hs-trend"  onclick="setHealthSort('trend',this)">추세순</button>
+    </div>
+    <div class="health-grid" id="healthGrid">
+      ${filtered.map((d, cardIdx) => renderHealthCard(d, cardIdx)).join('')}
+    </div>
+  `;
+
+  // 필터 버튼 상태 복원
+  document.querySelectorAll('.health-filter-btn').forEach(b => b.classList.remove('active'));
+  const hfBtn = document.getElementById('hf-' + healthFilter);
+  if (hfBtn) {
+    hfBtn.classList.add('active');
+    const cls = healthFilter === 'danger' ? 'danger' : healthFilter === 'warning' ? 'warning' : healthFilter === 'good' ? 'good' : '';
+    if (cls) hfBtn.classList.add(cls);
+  }
+  document.querySelectorAll('.health-sort-btn').forEach(b => b.classList.remove('active'));
+  const hsBtn = document.getElementById('hs-' + healthSort);
+  if (hsBtn) hsBtn.classList.add('active');
+
+  // 스파크라인 그리기
+  filtered.forEach((d, i) => {
+    drawSparkline(`spark-${i}`, d.scores, d.status);
+  });
+}
+
+function renderHealthCard(d, idx) {
+  const { store, latest, health, status, tags, avgScore, trendVal, failCount, actionCount, daysSince, inspCount } = d;
+
+  const trendStr = trendVal > 0 ? `+${trendVal.toFixed(1)}%` : `${trendVal.toFixed(1)}%`;
+  const trendColor = trendVal > 0 ? 'green' : trendVal < -10 ? 'red' : trendVal < 0 ? 'orange' : 'gray';
+
+  const lastDateStr = latest ? latest.inspected_at : '미점검';
+  const brandName = store.brands?.name || '';
+
+  const failColor = failCount >= 10 ? 'red' : failCount >= 5 ? 'orange' : 'green';
+  const actionColor = actionCount > 0 ? 'red' : 'green';
+  const scoreColor = (latest?.score||0) >= 80 ? 'green' : (latest?.score||0) >= 60 ? 'orange' : 'red';
+
+  return `
+    <div class="health-card ${status} fade-in" style="animation-delay:${idx*0.04}s"
+         onclick="openDetailByStore('${store.id}')">
+      <div class="health-card-accent"></div>
+      <div class="health-card-top">
+        <div>
+          <div class="health-card-brand">${brandName}</div>
+          <div class="health-card-name">${store.name}</div>
+          <div class="health-card-date">${lastDateStr !== '미점검' ? lastDateStr + ' 점검' : '점검 기록 없음'}</div>
+        </div>
+        <div>
+          <div class="health-score ${status}">${health}</div>
+          <div class="health-score-label">건강도</div>
+        </div>
+      </div>
+
+      <canvas class="health-sparkline" id="spark-${idx}"></canvas>
+
+      <div class="health-stats">
+        <div class="health-stat">
+          <div class="health-stat-label">최근점수</div>
+          <div class="health-stat-value ${scoreColor}">${latest ? Math.round(latest.score||0)+'%' : '-'}</div>
+        </div>
+        <div class="health-stat">
+          <div class="health-stat-label">추세</div>
+          <div class="health-stat-value ${trendColor}">${inspCount >= 2 ? trendStr : '-'}</div>
+        </div>
+        <div class="health-stat">
+          <div class="health-stat-label">미흡건수</div>
+          <div class="health-stat-value ${failColor}">${failCount}</div>
+        </div>
+      </div>
+
+      <div class="health-tags">
+        ${tags.length ? tags.map(t => `<span class="health-tag ${t.cls}">${t.label}</span>`).join('') : `<span class="health-tag green">✅ 정상</span>`}
+      </div>
+    </div>
+  `;
+}
+
+function drawSparkline(canvasId, scores, status) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  if (!scores || scores.length === 0) {
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.offsetWidth || 300;
+    canvas.height = 44;
+    ctx.fillStyle = '#f3f4f6';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#9ca3af';
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('점검 기록 없음', canvas.width/2, 26);
+    return;
+  }
+  // 1개면 점으로 표시
+  if (scores.length === 1) {
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.offsetWidth || 300;
+    canvas.height = 44;
+    const colorMap2 = { good:'#16a34a', warning:'#d97706', danger:'#dc2626' };
+    const lc = colorMap2[status] || '#6b7280';
+    ctx.beginPath();
+    ctx.arc(canvas.width/2, canvas.height/2, 6, 0, Math.PI*2);
+    ctx.fillStyle = lc;
+    ctx.fill();
+    ctx.fillStyle = lc + '30';
+    ctx.beginPath();
+    ctx.arc(canvas.width/2, canvas.height/2, 14, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = '#9ca3af';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText(`${scores[0]}%`, canvas.width - 8, canvas.height - 6);
+    return;
+  }
+
+  const w = canvas.offsetWidth || 300;
+  const h = 44;
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d');
+
+  const colorMap = { good:'#16a34a', warning:'#d97706', danger:'#dc2626' };
+  const lineColor = colorMap[status] || '#6b7280';
+
+  const minV = Math.min(...scores) - 5;
+  const maxV = Math.max(...scores) + 5;
+  const range = maxV - minV || 1;
+
+  const pts = scores.map((v, i) => ({
+    x: (i / (scores.length-1)) * (w - 16) + 8,
+    y: h - 8 - ((v - minV) / range) * (h - 16)
+  }));
+
+  // 배경 그라데이션
+  const grad = ctx.createLinearGradient(0, 0, 0, h);
+  grad.addColorStop(0, lineColor + '18');
+  grad.addColorStop(1, lineColor + '00');
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, h);
+  pts.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.lineTo(pts[pts.length-1].x, h);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // 선
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, pts[0].y);
+  for (let i = 1; i < pts.length; i++) {
+    const cp1x = (pts[i-1].x + pts[i].x) / 2;
+    ctx.bezierCurveTo(cp1x, pts[i-1].y, cp1x, pts[i].y, pts[i].x, pts[i].y);
+  }
+  ctx.strokeStyle = lineColor;
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+
+  // 마지막 점
+  const last = pts[pts.length-1];
+  ctx.beginPath();
+  ctx.arc(last.x, last.y, 4, 0, Math.PI*2);
+  ctx.fillStyle = lineColor;
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(last.x, last.y, 2, 0, Math.PI*2);
+  ctx.fillStyle = '#fff';
+  ctx.fill();
+}
+
+function setHealthFilter(f, btn) {
+  healthFilter = f;
+  document.querySelectorAll('.health-filter-btn').forEach(b => b.classList.remove('active','danger','warning','good'));
+  btn.classList.add('active');
+  if (f === 'danger')  btn.classList.add('danger');
+  if (f === 'warning') btn.classList.add('warning');
+  if (f === 'good')    btn.classList.add('good');
+  const el = document.getElementById('pageContent');
+  renderHealth(el);
+}
+
+function setHealthSort(s, btn) {
+  healthSort = s;
+  document.querySelectorAll('.health-sort-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const el = document.getElementById('pageContent');
+  renderHealth(el);
+}
+
 // ══════════════════════════════════════════
 // PAGE: HISTORY
 // ══════════════════════════════════════════
@@ -1229,7 +1695,7 @@ function filterHistory() {
 function renderHistTable(insp) {
   if (!insp.length) return `<div class="empty-state"><div class="empty-state-icon">📋</div><div class="empty-state-text">점검 이력이 없습니다</div></div>`;
   return `<table class="store-table">
-    <thead><tr><th>날짜</th><th>매장</th><th>브랜드</th><th>지역</th><th>점수</th><th>적합</th><th>미흡</th><th>상태</th></tr></thead>
+    <thead><tr><th>날짜</th><th>매장</th><th>브랜드</th><th>지역</th><th>점수</th><th>적합</th><th>미흡</th><th>상태</th><th style="width:60px;text-align:center">삭제</th></tr></thead>
     <tbody>${insp.map(i => {
       const score = i.score;
       const sc = score >= 80 ? 'high' : score >= 60 ? 'mid' : score ? 'low' : 'none';
@@ -1242,6 +1708,14 @@ function renderHistTable(insp) {
         <td style="color:var(--good);font-family:'DM Mono',monospace;font-size:12px">${i.pass_count ?? '-'}</td>
         <td style="color:var(--poor);font-family:'DM Mono',monospace;font-size:12px">${i.fail_count ?? '-'}</td>
         <td><span class="status-dot done"></span><span style="font-size:12px;color:var(--text-dim)">제출됨</span></td>
+        <td style="text-align:center" onclick="event.stopPropagation()">
+          <button onclick="confirmDeleteInsp('${i.id}','${(i.stores?.name||'').replace(/'/g,'')}')"
+            style="background:none;border:1.5px solid #fca5a5;color:#dc2626;border-radius:6px;
+                   padding:3px 8px;font-size:11px;font-weight:700;cursor:pointer;
+                   transition:all 0.15s;font-family:'Noto Sans KR',sans-serif;"
+            onmouseover="this.style.background='#fef2f2'"
+            onmouseout="this.style.background='none'">삭제</button>
+        </td>
       </tr>`;
     }).join('')}</tbody>
   </table>`;
@@ -1635,6 +2109,81 @@ sb.insert = async function(table, data) {
   if (!res.ok) throw new Error(await res.text());
   return res.json();
 };
+
+// sb.delete 메서드
+sb.delete = async function(table, query) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}${query}`, {
+    method: 'DELETE',
+    headers: { ...this.h, 'Prefer': 'return=minimal' },
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return true;
+};
+
+// ══════════════════════════════════════════
+// 점검 삭제
+// ══════════════════════════════════════════
+let _deleteInspId = null;
+
+function confirmDeleteInsp(inspId, storeName) {
+  _deleteInspId = inspId;
+  document.getElementById('deleteModalDesc').textContent = `${storeName} 점검 기록`;
+  document.getElementById('deleteModal').classList.remove('hidden');
+}
+
+function closeDeleteModal() {
+  document.getElementById('deleteModal').classList.add('hidden');
+  _deleteInspId = null;
+}
+
+async function executeDelete() {
+  if (!_deleteInspId) return;
+  const btn = document.getElementById('deleteConfirmBtn');
+  btn.textContent = '삭제 중...';
+  btn.disabled = true;
+
+  try {
+    // 1. 연결된 inspection_items 먼저 삭제
+    await sb.delete('inspection_items', `?inspection_id=eq.${_deleteInspId}`);
+    // 2. action_logs 삭제 (있으면)
+    try { await sb.delete('action_logs', `?inspection_item_id=in.(select id from inspection_items where inspection_id=eq.${_deleteInspId})`); } catch(e) {}
+    // 3. 점검 본체 삭제
+    await sb.delete('inspections', `?id=eq.${_deleteInspId}`);
+
+    // 캐시에서도 제거
+    cache.inspections = (cache.inspections || []).filter(i => i.id !== _deleteInspId);
+
+    closeDeleteModal();
+    btn.textContent = '삭제 확인';
+    btn.disabled = false;
+
+    // 현재 페이지 새로고침
+    renderPage(currentPage);
+
+    // 간단한 토스트 알림
+    showToast('삭제 완료', 'success');
+  } catch(e) {
+    console.error('삭제 실패:', e);
+    btn.textContent = '삭제 실패 - 다시 시도';
+    btn.disabled = false;
+    showToast('삭제 실패: ' + e.message, 'error');
+  }
+}
+
+function showToast(msg, type) {
+  const existing = document.getElementById('toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.id = 'toast';
+  toast.textContent = msg;
+  const bg = type === 'success' ? '#16a34a' : '#dc2626';
+  toast.style.cssText = `position:fixed;bottom:24px;right:24px;z-index:999;
+    background:${bg};color:#fff;padding:12px 22px;border-radius:10px;
+    font-size:14px;font-weight:700;font-family:'Noto Sans KR',sans-serif;
+    box-shadow:0 4px 16px rgba(0,0,0,0.2);animation:fadeIn 0.3s ease;`;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
 </script>
 </body>
 </html>
