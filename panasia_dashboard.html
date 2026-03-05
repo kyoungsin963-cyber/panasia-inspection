@@ -2,8 +2,14 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PANASIA DINEHILL · 점검 대시보드 v3</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PANASIA">
+<meta name="theme-color" content="#1a1f2e" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#1d4ed8">
+<meta name="mobile-web-app-capable" content="yes">
+<title>PANASIA DINEHILL · 점검 대시보드 v4</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
@@ -499,63 +505,57 @@ html{scroll-behavior:smooth;}
 .gauge-value{position:absolute;bottom:0;left:50%;transform:translateX(-50%);font-family:'Bebas Neue',sans-serif;font-size:28px;line-height:1;}
 .gauge-label{font-size:11px;color:var(--text-muted);margin-top:4px;}
 
-@media(max-width:700px){
-  .hq-grid{grid-template-columns:1fr;}
-  .assign-grid{grid-template-columns:1fr;}
-  .remind-grid{grid-template-columns:repeat(2,1fr);}
-}
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:98;backdrop-filter:blur(2px);}
 .hamburger{display:none;background:none;border:none;cursor:pointer;padding:6px;border-radius:8px;flex-direction:column;gap:5px;align-items:center;justify-content:center;}
 .hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .25s;}
 
-/* ══ 5차: BOTTOM NAV (모바일 하단 탭바) ══ */
-.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);z-index:90;padding:0 0 env(safe-area-inset-bottom,0);box-shadow:0 -2px 16px rgba(0,0,0,.08);}
-.bottom-nav-inner{display:flex;height:56px;}
-.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;position:relative;transition:all .15s;border:none;background:none;font-family:'Noto Sans KR',sans-serif;}
+/* ══ BOTTOM NAV (모바일 하단 탭바) ══ */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);z-index:90;box-shadow:0 -2px 16px rgba(0,0,0,.08);}
+.bottom-nav-inner{display:flex;height:60px;}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;position:relative;transition:all .15s;border:none;background:none;font-family:'Noto Sans KR',sans-serif;min-height:48px;}
 .bnav-item:active{background:var(--surface2);}
-.bnav-icon{font-size:20px;line-height:1;}
-.bnav-label{font-size:9px;font-weight:700;color:var(--text-muted);letter-spacing:.02em;}
+.bnav-icon{font-size:22px;line-height:1;}
+.bnav-label{font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.02em;}
 .bnav-item.active .bnav-icon{filter:none;}
 .bnav-item.active .bnav-label{color:var(--accent);font-weight:900;}
-.bnav-item.active::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:24px;height:3px;background:var(--accent);border-radius:3px 3px 0 0;}
-.bnav-badge{position:absolute;top:6px;right:calc(50% - 18px);background:var(--poor);color:#fff;font-size:9px;font-weight:900;min-width:15px;height:15px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 3px;border:2px solid var(--surface);}
-/* 하단 네비 있을때 콘텐츠 패딩 */
-.has-bottom-nav .content{padding-bottom:72px!important;}
-.has-bottom-nav .toast{bottom:72px!important;}
+.bnav-item.active::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:28px;height:3px;background:var(--accent);border-radius:0 0 3px 3px;}
+.bnav-badge{position:absolute;top:6px;right:calc(50% - 18px);background:var(--poor);color:#fff;font-size:9px;font-weight:900;min-width:16px;height:16px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 3px;border:2px solid var(--surface);}
+.has-bottom-nav .content{padding-bottom:76px!important;}
+.has-bottom-nav .toast{bottom:76px!important;}
 
-/* ══ 5차: 모바일 카드형 매장 목록 ══ */
+/* ══ 모바일 카드형 매장 목록 ══ */
 .store-card-list{display:flex;flex-direction:column;gap:8px;}
-.store-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:12px;}
+.store-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:12px;-webkit-tap-highlight-color:transparent;}
 .store-card:active{background:var(--surface2);}
 .store-card-left{flex:1;min-width:0;}
 .store-card-name{font-size:15px;font-weight:800;color:var(--text);margin-bottom:2px;}
 .store-card-meta{font-size:11px;color:var(--text-muted);}
 .store-card-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
-.store-card-score{font-family:'Bebas Neue',sans-serif;font-size:28px;line-height:1;}
+.store-card-score{font-family:'Bebas Neue',sans-serif;font-size:30px;line-height:1;}
 .store-card-change{font-size:10px;font-weight:700;}
 
-/* ══ 6차: QUICK ACTION FAB ══ */
-.fab{display:none;position:fixed;right:18px;bottom:72px;width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;font-size:24px;border:none;cursor:pointer;z-index:89;box-shadow:0 4px 18px rgba(29,78,216,.45);align-items:center;justify-content:center;transition:all .2s;font-family:'Noto Sans KR',sans-serif;}
-.fab:active{transform:scale(.93);}
-.fab-menu{display:none;position:fixed;right:18px;bottom:132px;z-index:89;flex-direction:column;gap:9px;align-items:flex-end;}
+/* ══ QUICK ACTION FAB ══ */
+.fab{display:none;position:fixed;right:18px;bottom:76px;width:56px;height:56px;border-radius:50%;background:var(--accent);color:#fff;font-size:26px;border:none;cursor:pointer;z-index:89;box-shadow:0 4px 20px rgba(29,78,216,.5);align-items:center;justify-content:center;transition:all .2s;font-family:'Noto Sans KR',sans-serif;}
+.fab:active{transform:scale(.9);}
+.fab-menu{display:none;position:fixed;right:18px;bottom:144px;z-index:89;flex-direction:column;gap:9px;align-items:flex-end;}
 .fab-menu.open{display:flex;}
 .fab-item{display:flex;align-items:center;gap:10px;cursor:pointer;}
-.fab-item-label{background:#1a1f2e;color:#fff;font-size:12px;font-weight:700;padding:6px 12px;border-radius:20px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.3);}
-.fab-item-btn{width:42px;height:42px;border-radius:50%;border:none;font-size:20px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;transition:transform .15s;}
+.fab-item-label{background:#1a1f2e;color:#fff;font-size:12px;font-weight:700;padding:7px 14px;border-radius:20px;white-space:nowrap;box-shadow:0 2px 10px rgba(0,0,0,.35);}
+.fab-item-btn{width:44px;height:44px;border-radius:50%;border:none;font-size:20px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;transition:transform .15s;}
 .fab-item-btn:active{transform:scale(.9);}
 
-/* ══ 6차: QUICK VIEW 모달 (모바일 시트) ══ */
-.sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150;display:flex;align-items:flex-end;backdrop-filter:blur(3px);}
+/* ══ 모바일 바텀시트 ══ */
+.sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150;display:flex;align-items:flex-end;backdrop-filter:blur(4px);}
 .sheet-overlay.hidden{display:none;}
-.sheet-box{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-height:88dvh;display:flex;flex-direction:column;overflow:hidden;padding-bottom:env(safe-area-inset-bottom,0);animation:sheetUp .28s cubic-bezier(.4,0,.2,1);}
+.sheet-box{background:var(--surface);border-radius:22px 22px 0 0;width:100%;max-height:90dvh;display:flex;flex-direction:column;overflow:hidden;padding-bottom:var(--safe-bottom);animation:sheetUp .3s cubic-bezier(.4,0,.2,1);}
 @keyframes sheetUp{from{transform:translateY(100%)}to{transform:none}}
-.sheet-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:10px auto 6px;}
+.sheet-handle{width:40px;height:4px;background:var(--border2);border-radius:2px;margin:12px auto 8px;}
 .sheet-header{padding:10px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.sheet-title{font-size:16px;font-weight:800;}
-.sheet-close{background:var(--surface2);border:none;width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.sheet-body{overflow-y:auto;flex:1;padding:16px 20px;-webkit-overflow-scrolling:touch;}
+.sheet-title{font-size:17px;font-weight:900;}
+.sheet-close{background:var(--surface2);border:none;width:30px;height:30px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.sheet-body{overflow-y:auto;flex:1;padding:16px 20px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
 
-/* ══ 6차: 모바일 점검 요약 카드 ══ */
+/* ══ 모바일 점검 요약 카드 ══ */
 .mobile-summary-card{background:linear-gradient(135deg,#1a1f2e,#252d40);border-radius:16px;padding:18px;margin-bottom:12px;color:#fff;}
 .msc-store{font-size:18px;font-weight:900;margin-bottom:2px;}
 .msc-date{font-size:11px;color:rgba(255,255,255,.5);font-family:'DM Mono',monospace;margin-bottom:14px;}
@@ -564,30 +564,159 @@ html{scroll-behavior:smooth;}
 .msc-kpi-val{font-family:'Bebas Neue',sans-serif;font-size:28px;line-height:1;}
 .msc-kpi-label{font-size:10px;color:rgba(255,255,255,.5);font-weight:700;letter-spacing:.04em;}
 
-/* ══ 7차: 풀스크린 검색 ══ */
+/* ══ 풀스크린 검색 ══ */
 .search-overlay{position:fixed;inset:0;background:var(--surface);z-index:160;display:flex;flex-direction:column;padding:0;transform:translateY(-100%);transition:transform .25s cubic-bezier(.4,0,.2,1);}
 .search-overlay.open{transform:none;}
-.search-topbar{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);}
-.search-field{flex:1;padding:9px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;font-family:'Noto Sans KR',sans-serif;outline:none;background:var(--surface2);}
+.search-topbar{display:flex;align-items:center;gap:10px;padding:calc(12px + var(--safe-top)) 16px 12px;border-bottom:1px solid var(--border);}
+.search-field{flex:1;padding:11px 16px;border:1.5px solid var(--border);border-radius:12px;font-size:16px;font-family:'Noto Sans KR',sans-serif;outline:none;background:var(--surface2);}
 .search-field:focus{border-color:var(--accent);}
-.search-cancel{background:none;border:none;font-size:14px;font-weight:700;color:var(--accent);cursor:pointer;white-space:nowrap;font-family:'Noto Sans KR',sans-serif;padding:8px 4px;}
-.search-results{flex:1;overflow-y:auto;padding:10px 16px;}
-.search-result-item{display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:1px solid var(--border);cursor:pointer;}
+.search-cancel{background:none;border:none;font-size:15px;font-weight:700;color:var(--accent);cursor:pointer;white-space:nowrap;font-family:'Noto Sans KR',sans-serif;padding:8px 4px;}
+.search-results{flex:1;overflow-y:auto;padding:10px 16px;overscroll-behavior:contain;}
+.search-result-item{display:flex;align-items:center;gap:12px;padding:14px;border-bottom:1px solid var(--border);cursor:pointer;border-radius:10px;margin-bottom:2px;}
 .search-result-item:active{background:var(--surface2);}
-.search-result-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-.search-result-name{font-size:14px;font-weight:700;}
+.search-result-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.search-result-name{font-size:15px;font-weight:700;}
 .search-result-meta{font-size:12px;color:var(--text-muted);}
 .search-section-label{font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--text-muted);padding:12px 0 6px;text-transform:uppercase;}
 
-/* ══ 7차: 스켈레톤 로딩 ══ */
+/* ══ 스켈레톤 로딩 ══ */
 @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
 .skeleton{background:linear-gradient(90deg,var(--surface3) 25%,var(--surface2) 50%,var(--surface3) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px;}
 .skeleton-card{height:80px;border-radius:12px;margin-bottom:8px;}
 .skeleton-kpi{height:90px;border-radius:12px;}
 
-/* ══ 7차: 당겨서 새로고침 표시 ══ */
-.ptr-indicator{position:fixed;top:0;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;padding:6px 18px;border-radius:0 0 20px 20px;font-size:12px;font-weight:700;z-index:200;transition:all .25s;opacity:0;pointer-events:none;}
+/* ══ 당겨서 새로고침 표시 ══ */
+.ptr-indicator{position:fixed;top:0;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;padding:8px 20px;border-radius:0 0 20px 20px;font-size:12px;font-weight:700;z-index:200;transition:all .25s;opacity:0;pointer-events:none;}
 .ptr-indicator.visible{opacity:1;}
+
+/* ══ 12차: 모바일 홈 히어로 카드 ══ */
+.m-hero{display:none;background:linear-gradient(145deg,#1a1f2e 0%,#1e3a6e 50%,#1a1f2e 100%);border-radius:20px;padding:20px;margin-bottom:14px;color:#fff;position:relative;overflow:hidden;}
+.m-hero::before{content:'';position:absolute;right:-30px;top:-30px;width:160px;height:160px;background:radial-gradient(circle,rgba(37,99,235,.3) 0%,transparent 70%);}
+.m-hero::after{content:'';position:absolute;left:-20px;bottom:-20px;width:120px;height:120px;background:radial-gradient(circle,rgba(124,58,237,.2) 0%,transparent 70%);}
+.m-hero-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;position:relative;z-index:1;}
+.m-hero-greeting{font-size:13px;color:rgba(255,255,255,.5);font-weight:500;margin-bottom:3px;}
+.m-hero-title{font-size:22px;font-weight:900;letter-spacing:-.02em;line-height:1.1;}
+.m-hero-date{font-size:11px;color:rgba(255,255,255,.4);font-family:'DM Mono',monospace;text-align:right;margin-top:4px;}
+.m-hero-score-ring{width:72px;height:72px;flex-shrink:0;}
+.m-hero-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;position:relative;z-index:1;}
+.m-hero-kpi{background:rgba(255,255,255,.08);border-radius:12px;padding:10px;text-align:center;border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(8px);}
+.m-hero-kpi-val{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;margin-bottom:2px;}
+.m-hero-kpi-val.red{color:#f87171;}
+.m-hero-kpi-val.green{color:#4ade80;}
+.m-hero-kpi-val.blue{color:#60a5fa;}
+.m-hero-kpi-val.orange{color:#fb923c;}
+.m-hero-kpi-label{font-size:10px;color:rgba(255,255,255,.45);font-weight:700;letter-spacing:.04em;line-height:1.2;}
+
+/* 12차: 빠른 액션 버튼 행 */
+.m-quick-row{display:none;gap:8px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.m-quick-row::-webkit-scrollbar{display:none;}
+.m-quick-btn{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:14px;cursor:pointer;min-width:64px;transition:all .15s;-webkit-tap-highlight-color:transparent;}
+.m-quick-btn:active{background:var(--surface2);transform:scale(.96);}
+.m-quick-btn-icon{font-size:22px;line-height:1;}
+.m-quick-btn-label{font-size:10px;font-weight:700;color:var(--text-dim);white-space:nowrap;}
+.m-quick-btn.alert{border-color:rgba(220,38,38,.3);background:var(--poor-bg);}
+.m-quick-btn.alert .m-quick-btn-label{color:var(--poor);}
+
+/* 12차: 모바일 섹션 헤더 */
+.m-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.m-section-title{font-size:14px;font-weight:800;color:var(--text);}
+.m-section-more{font-size:12px;font-weight:700;color:var(--accent);cursor:pointer;padding:4px 0;}
+
+/* 12차: 가로 스크롤 스토어 카드 */
+.m-store-scroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.m-store-scroll::-webkit-scrollbar{display:none;}
+.m-store-mini{flex-shrink:0;width:140px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;}
+.m-store-mini:active{transform:scale(.97);}
+.m-store-mini.danger{border-color:rgba(220,38,38,.3);border-left:3px solid var(--poor);}
+.m-store-mini.warning{border-color:rgba(217,119,6,.3);border-left:3px solid var(--warn);}
+.m-store-mini.good{border-color:rgba(22,163,74,.2);border-left:3px solid var(--good);}
+.m-store-mini-name{font-size:13px;font-weight:800;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.m-store-mini-brand{font-size:10px;color:var(--text-muted);margin-bottom:8px;}
+.m-store-mini-score{font-family:'Bebas Neue',sans-serif;font-size:30px;line-height:1;}
+.m-store-mini-score.high{color:var(--good);}
+.m-store-mini-score.mid{color:var(--warn);}
+.m-store-mini-score.low{color:var(--poor);}
+.m-store-mini-score.none{color:var(--text-muted);}
+.m-store-mini-date{font-size:10px;color:var(--text-muted);font-family:'DM Mono',monospace;margin-top:4px;}
+
+/* 12차: 모바일 알림 카드 */
+.m-alert-card{background:linear-gradient(135deg,var(--poor-bg),#fff5f5);border:1.5px solid rgba(220,38,38,.2);border-radius:14px;padding:12px 14px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:10px;-webkit-tap-highlight-color:transparent;transition:all .15s;}
+.m-alert-card:active{transform:scale(.98);}
+.m-alert-card.warn{background:linear-gradient(135deg,var(--warn-bg),#fffdf5);border-color:rgba(217,119,6,.2);}
+.m-alert-card.info{background:linear-gradient(135deg,var(--blue-bg),#f0f4ff);border-color:rgba(37,99,235,.2);}
+.m-alert-icon{font-size:24px;flex-shrink:0;}
+.m-alert-content{flex:1;min-width:0;}
+.m-alert-title{font-size:13px;font-weight:800;color:var(--text);margin-bottom:2px;}
+.m-alert-sub{font-size:11px;color:var(--text-dim);}
+.m-alert-arrow{font-size:16px;color:var(--text-muted);flex-shrink:0;}
+
+/* 13차: 갤럭시/애플 Safe Area & Dynamic Island 대응 */
+:root{
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+}
+
+/* 13차: 터치 최적화 */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+input, textarea, select { -webkit-user-select: text; }
+
+/* 13차: 스크롤 최적화 */
+.content { -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
+
+/* 13차: 최소 터치 타겟 48px */
+.bnav-item { min-height: 48px; }
+.btn { min-height: 40px; }
+.nav-item { min-height: 44px; }
+.filter-btn { min-height: 36px; }
+.fab { width: 56px !important; height: 56px !important; }
+
+/* 14차: 모바일 차트 최적화 */
+.m-chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;}
+.m-chart-header{padding:12px 14px 8px;display:flex;align-items:center;justify-content:space-between;}
+.m-chart-title{font-size:13px;font-weight:800;}
+.m-chart-body{padding:0 8px 12px;height:180px;position:relative;}
+.m-brand-scroll{display:flex;gap:8px;overflow-x:auto;padding:0 14px 12px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.m-brand-scroll::-webkit-scrollbar{display:none;}
+.m-brand-card{flex-shrink:0;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:10px 12px;min-width:100px;text-align:center;}
+.m-brand-name{font-size:11px;font-weight:700;color:var(--text-dim);margin-bottom:6px;white-space:nowrap;}
+.m-brand-score-val{font-family:'Bebas Neue',sans-serif;font-size:28px;line-height:1;margin-bottom:4px;}
+.m-brand-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.m-brand-bar-fill{height:100%;border-radius:2px;transition:width .8s ease;}
+
+/* 14차: 스와이프 지표 카드 */
+.m-swipe-cards{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;scroll-snap-type:x mandatory;}
+.m-swipe-cards::-webkit-scrollbar{display:none;}
+.m-swipe-card{flex-shrink:0;width:calc(100vw - 48px);scroll-snap-align:start;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;}
+.m-swipe-dots{display:flex;gap:5px;justify-content:center;margin-top:8px;margin-bottom:14px;}
+.m-swipe-dot{width:6px;height:6px;border-radius:50%;background:var(--border2);transition:all .2s;}
+.m-swipe-dot.active{width:18px;border-radius:3px;background:var(--accent);}
+
+/* 15차: 접근성 & 가독성 */
+@media(prefers-color-scheme:dark){
+  :root:not(.light-forced){
+    --bg:#0f1117;--surface:#1a1f2e;--surface2:#222840;--surface3:#2a3050;
+    --border:#2d3548;--border2:#3a4560;
+    --text:#f0f4ff;--text-dim:#9ba8c4;--text-muted:#5c6882;
+    --accent:#3b82f6;--accent-bg:#1e2d4a;
+    --good:#22c55e;--good-bg:#0f2a1a;
+    --poor:#f87171;--poor-bg:#2a1515;
+    --warn:#fbbf24;--warn-bg:#2a2010;
+    --blue:#60a5fa;--blue-bg:#1a2540;
+    --purple:#a78bfa;--purple-bg:#20153a;
+  }
+}
+
+/* 15차: 고대비 텍스트 */
+.kpi-label{font-weight:800!important;}
+.score-pill{font-weight:900!important;}
+
+/* 15차: 큰 화면 가로 스크롤 방지 */
+body{overflow-x:hidden;}
 
 /* responsive */
 @media(max-width:1280px){
@@ -604,482 +733,167 @@ html{scroll-behavior:smooth;}
   .panel-row.cols2,.panel-row.cols3,.panel-row.c7030{grid-template-columns:1fr;}
 }
 
-/* ══════════════════════════════════════════════════════
-   12~15차: 갤럭시/아이폰 완전 최적화
-══════════════════════════════════════════════════════ */
-
-/* ── 14차: CSS 변수 – Safe Area ── */
-:root{
-  --sab: env(safe-area-inset-bottom, 0px);
-  --sat: env(safe-area-inset-top, 0px);
-  --sal: env(safe-area-inset-left, 0px);
-  --sar: env(safe-area-inset-right, 0px);
-}
-
-/* ── 15차: 마이크로 인터랙션 ── */
-@keyframes fadeSlideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@keyframes scaleIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
-@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
-@keyframes ringFill{from{stroke-dashoffset:var(--ring-max)}to{stroke-dashoffset:var(--ring-offset)}}
-
-/* 전역 터치 하이라이트 제거 */
-*{-webkit-tap-highlight-color:transparent;}
-
-/* ── 12차: 모바일 홈 히어로 ── */
-.m-hero{
-  display:none;
-  background:linear-gradient(165deg,#0c1220 0%,#142038 60%,#0c1220 100%);
-  padding:calc(18px + var(--sat)) 16px 0;
-  position:relative;overflow:hidden;
-}
-.m-hero::before{
-  content:'';position:absolute;top:-80px;right:-60px;
-  width:280px;height:280px;border-radius:50%;
-  background:radial-gradient(circle,rgba(59,130,246,.18) 0%,transparent 65%);
-  pointer-events:none;
-}
-/* 탑바 영역 */
-.m-hero-bar{
-  display:flex;align-items:center;
-  justify-content:space-between;
-  margin-bottom:18px;
-}
-.m-hero-brand{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:22px;letter-spacing:.1em;
-  color:rgba(255,255,255,.9);line-height:1;
-}
-.m-hero-date{
-  font-size:10px;color:rgba(255,255,255,.38);
-  font-family:'DM Mono',monospace;margin-top:2px;
-}
-.m-hero-actions{display:flex;gap:7px;}
-.m-hbtn{
-  width:38px;height:38px;border-radius:50%;
-  background:rgba(255,255,255,.1);border:none;
-  display:flex;align-items:center;justify-content:center;
-  font-size:16px;color:#fff;
-  transition:background .12s,transform .1s;
-  min-width:44px;min-height:44px;/* 최소 터치 타겟 */
-}
-.m-hbtn:active{background:rgba(255,255,255,.22);transform:scale(.9);}
-
-/* 스코어 게이지 + 스탯 */
-.m-gauge-row{
-  display:flex;align-items:center;gap:16px;
-  padding:0 0 18px;
-}
-.m-gauge{position:relative;width:88px;height:88px;flex-shrink:0;}
-.m-gauge svg{transform:rotate(-90deg);}
-.m-gauge-track{fill:none;stroke:rgba(255,255,255,.08);stroke-width:8;}
-.m-gauge-arc{
-  fill:none;stroke-width:8;stroke-linecap:round;
-  transition:stroke-dashoffset 1.1s cubic-bezier(.4,0,.2,1),stroke .4s;
-}
-.m-gauge-center{
-  position:absolute;inset:0;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-}
-.m-gauge-num{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:26px;color:#fff;line-height:1;
-}
-.m-gauge-cap{
-  font-size:8px;color:rgba(255,255,255,.38);
-  font-weight:700;letter-spacing:.08em;
-}
-.m-stats{flex:1;display:flex;flex-direction:column;gap:9px;}
-.m-stat{display:flex;justify-content:space-between;align-items:center;}
-.m-stat-lbl{font-size:11px;color:rgba(255,255,255,.42);font-weight:600;}
-.m-stat-val{font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff;line-height:1;}
-.m-stat-val.red{color:#f87171;}
-.m-stat-val.green{color:#4ade80;}
-.m-stat-val.yellow{color:#fbbf24;}
-.m-stat-val.blue{color:#60a5fa;}
-
-/* 상태 칩 레일 */
-.m-chips{
-  display:flex;gap:8px;
-  overflow-x:auto;
-  padding:0 16px calc(14px + var(--sab,0px));
-  margin:0 -16px;
-  -webkit-overflow-scrolling:touch;
-  scroll-snap-type:x mandatory;
-  scrollbar-width:none;
-}
-.m-chips::-webkit-scrollbar{display:none;}
-.m-chip{
-  flex-shrink:0;scroll-snap-align:start;
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:14px;padding:10px 14px;
-  display:flex;flex-direction:column;
-  align-items:center;gap:3px;
-  cursor:pointer;min-width:66px;
-  transition:transform .12s,background .12s;
-  user-select:none;-webkit-user-select:none;
-}
-.m-chip:active{transform:scale(.93);background:rgba(255,255,255,.18);}
-.m-chip.c-danger{background:rgba(220,38,38,.18);border-color:rgba(220,38,38,.35);}
-.m-chip.c-warn{background:rgba(217,119,6,.18);border-color:rgba(217,119,6,.35);}
-.m-chip.c-good{background:rgba(22,163,74,.18);border-color:rgba(22,163,74,.35);}
-.m-chip-n{font-family:'Bebas Neue',sans-serif;font-size:24px;color:#fff;line-height:1;}
-.m-chip-l{font-size:9px;color:rgba(255,255,255,.45);font-weight:700;white-space:nowrap;letter-spacing:.03em;}
-
-/* ── 12차: 모바일 섹션 & 레일 ── */
-.m-sec{padding:14px 16px;}
-.m-sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.m-sec-title{font-size:13px;font-weight:800;color:var(--text);}
-.m-sec-more{font-size:12px;font-weight:700;color:var(--accent);min-height:36px;display:flex;align-items:center;}
-.m-rail{
-  display:flex;gap:10px;
-  overflow-x:auto;
-  padding:3px 16px 12px;
-  margin:0 -16px;
-  -webkit-overflow-scrolling:touch;
-  scroll-snap-type:x mandatory;
-  scrollbar-width:none;
-}
-.m-rail::-webkit-scrollbar{display:none;}
-
-/* ── 13차: 매장 상태 카드 ── */
-.m-scard{
-  flex-shrink:0;scroll-snap-align:start;
-  width:144px;background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:16px;padding:14px;
-  cursor:pointer;
-  border-top:3px solid var(--border2);
-  transition:transform .1s;
-  animation:scaleIn .2s ease both;
-}
-.m-scard:active{transform:scale(.96);}
-.m-scard.good{border-top-color:var(--good);}
-.m-scard.warn{border-top-color:var(--warn);}
-.m-scard.danger{border-top-color:var(--poor);background:var(--poor-bg);}
-.m-scard-name{font-size:13px;font-weight:800;color:var(--text);margin-bottom:2px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.m-scard-brand{font-size:10px;color:var(--text-muted);margin-bottom:10px;}
-.m-scard-score{font-family:'Bebas Neue',sans-serif;font-size:38px;line-height:1;}
-.m-scard-score.good{color:var(--good);}
-.m-scard-score.warn{color:var(--warn);}
-.m-scard-score.danger{color:var(--poor);}
-.m-scard-score.none{color:var(--text-muted);}
-.m-scard-meta{font-size:9px;color:var(--text-muted);font-family:'DM Mono',monospace;margin-top:5px;}
-
-/* ── 13차: 미흡 빠른 카드 ── */
-.m-fcard{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:12px;margin-bottom:7px;
-  overflow:hidden;cursor:pointer;
-  display:flex;align-items:stretch;
-  transition:transform .1s;
-  animation:fadeSlideUp .2s ease both;
-}
-.m-fcard:active{transform:scale(.99);}
-.m-fcard-bar{width:4px;flex-shrink:0;}
-.m-fcard-bar.action{background:var(--warn);}
-.m-fcard-bar.repeat{background:var(--purple);}
-.m-fcard-bar.normal{background:var(--border2);}
-.m-fcard-body{padding:11px 13px;flex:1;min-width:0;}
-.m-fcard-store{font-size:10px;font-weight:700;color:var(--text-muted);margin-bottom:3px;}
-.m-fcard-note{font-size:13px;font-weight:700;color:var(--text);line-height:1.4;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.m-fcard-tags{display:flex;gap:4px;margin-top:5px;}
-.m-ftag{font-size:9px;font-weight:800;padding:2px 7px;border-radius:10px;}
-.m-ftag.action{background:var(--warn-bg);color:var(--warn);}
-.m-ftag.repeat{background:var(--purple-bg);color:var(--purple);}
-.m-fcard-right{padding:11px 13px;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:5px;flex-shrink:0;}
-
-/* ── 13차: 빠른 이동 그리드 ── */
-.m-qgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
-.m-qbtn{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:14px;padding:12px 6px;
-  display:flex;flex-direction:column;
-  align-items:center;gap:5px;
-  transition:transform .1s,background .1s;
-  font-family:'Noto Sans KR',sans-serif;
-  cursor:pointer;min-height:72px;
-}
-.m-qbtn:active{background:var(--surface2);transform:scale(.93);}
-.m-qbtn-ic{font-size:22px;line-height:1;}
-.m-qbtn-lbl{font-size:10px;font-weight:700;color:var(--text-dim);}
-
-/* ── 13차: 건강도 리스트형 (모바일 전용) ── */
-.m-hlist{display:flex;flex-direction:column;gap:6px;}
-.m-hitem{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:14px;padding:13px 15px;
-  display:flex;align-items:center;gap:13px;
-  cursor:pointer;
-  animation:fadeSlideUp .18s ease both;
-  transition:transform .1s;
-}
-.m-hitem:active{transform:scale(.99);}
-.m-hring{position:relative;width:50px;height:50px;flex-shrink:0;}
-.m-hring svg{transform:rotate(-90deg);}
-.m-hring-val{
-  position:absolute;inset:0;
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Bebas Neue',sans-serif;font-size:15px;
-}
-.m-hinfo{flex:1;min-width:0;}
-.m-hname{font-size:14px;font-weight:800;color:var(--text);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.m-hbrand{font-size:11px;color:var(--text-muted);}
-.m-hbar{height:3px;background:var(--surface3);border-radius:2px;margin-top:6px;overflow:hidden;}
-.m-hbar-fill{height:100%;border-radius:2px;transition:width .9s ease;}
-.m-hright{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
-.m-hscore{font-family:'Bebas Neue',sans-serif;font-size:22px;line-height:1;}
-.m-hdays{font-size:9px;color:var(--text-muted);font-family:'DM Mono',monospace;white-space:nowrap;}
-
-/* ── 13차: 갤럭시 스타일 리스트 ── */
-.g-list{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
-.g-item{
-  display:flex;align-items:center;gap:13px;
-  padding:13px 15px;border-bottom:1px solid var(--border);
-  cursor:pointer;min-height:60px;
-  transition:background .08s;
-}
-.g-item:last-child{border-bottom:none;}
-.g-item:active{background:var(--surface2);}
-.g-ic{
-  width:40px;height:40px;border-radius:12px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px;flex-shrink:0;
-}
-.g-body{flex:1;min-width:0;}
-.g-title{font-size:14px;font-weight:700;color:var(--text);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.g-sub{font-size:11px;color:var(--text-muted);margin-top:1px;}
-.g-right{display:flex;align-items:center;gap:6px;flex-shrink:0;}
-.g-chev{font-size:16px;color:var(--text-muted);opacity:.35;}
-
-/* ── 14차: Bottom Nav – Safe Area + 블러 ── */
-.bottom-nav{
-  display:none;
-  position:fixed;bottom:0;left:0;right:0;
-  background:rgba(255,255,255,.88);
-  border-top:1px solid rgba(0,0,0,.08);
-  z-index:90;
-  padding-bottom:var(--sab);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  box-shadow:0 -1px 0 rgba(0,0,0,.06);
-}
-body.dark-mode .bottom-nav{background:rgba(15,17,23,.88);}
-.bottom-nav-inner{display:flex;height:50px;}
-.bnav-item{
-  flex:1;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:2px;
-  cursor:pointer;position:relative;
-  border:none;background:none;
-  font-family:'Noto Sans KR',sans-serif;
-  min-height:50px;/* iOS 44pt+ */
-}
-.bnav-icon{font-size:21px;line-height:1;transition:transform .2s cubic-bezier(.34,1.56,.64,1);}
-.bnav-label{font-size:9px;font-weight:700;color:var(--text-muted);letter-spacing:.01em;}
-.bnav-item.active .bnav-icon{transform:scale(1.18);}
-.bnav-item.active .bnav-label{color:var(--accent);}
-.bnav-item.active::after{
-  content:'';position:absolute;bottom:0;left:50%;
-  transform:translateX(-50%);
-  width:26px;height:3px;
-  background:var(--accent);border-radius:3px 3px 0 0;
-}
-.bnav-item:active .bnav-icon{transform:scale(.88);transition:transform .08s;}
-.bnav-badge{
-  position:absolute;top:5px;right:calc(50% - 19px);
-  background:var(--poor);color:#fff;
-  font-size:8px;font-weight:900;
-  min-width:14px;height:14px;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  padding:0 3px;border:2px solid var(--surface);
-}
-
-/* 14차: 콘텐츠 패딩 Safe Area */
-.has-bottom-nav .content{padding-bottom:calc(60px + var(--sab))!important;}
-.has-bottom-nav .toast{bottom:calc(66px + var(--sab))!important;}
-
-/* ── 14차: 모바일 바텀시트 ── */
-.sheet-overlay{
-  position:fixed;inset:0;
-  background:rgba(0,0,0,.48);
-  z-index:150;display:flex;align-items:flex-end;
-  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
-}
-.sheet-overlay.hidden{display:none;}
-.sheet-box{
-  background:var(--surface);
-  border-radius:22px 22px 0 0;
-  width:100%;max-height:90dvh;
-  display:flex;flex-direction:column;
-  overflow:hidden;
-  padding-bottom:var(--sab);
-  animation:sheetUp .3s cubic-bezier(.25,.46,.45,.94);
-}
-@keyframes sheetUp{from{transform:translateY(100%)}to{transform:none}}
-.sheet-handle{width:40px;height:5px;background:var(--border2);border-radius:3px;margin:12px auto 4px;}
-.sheet-header{padding:8px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.sheet-title{font-size:17px;font-weight:800;}
-.sheet-close{background:var(--surface2);border:none;width:30px;height:30px;border-radius:50%;font-size:13px;display:flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;}
-.sheet-body{overflow-y:auto;flex:1;padding:16px 20px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
-
-/* ── 14차: 풀스크린 검색 ── */
-.search-overlay{
-  position:fixed;inset:0;background:var(--surface);
-  z-index:160;display:flex;flex-direction:column;
-  transform:translateY(-100%);
-  transition:transform .28s cubic-bezier(.4,0,.2,1);
-  padding-top:var(--sat);
-}
-.search-overlay.open{transform:none;}
-.search-topbar{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);}
-.search-field{
-  flex:1;padding:10px 14px;
-  border:1.5px solid var(--border);border-radius:12px;
-  font-size:16px;/* iOS 자동 확대 방지 */
-  font-family:'Noto Sans KR',sans-serif;
-  outline:none;background:var(--surface2);
-  -webkit-appearance:none;
-}
-.search-field:focus{border-color:var(--accent);}
-.search-cancel{background:none;border:none;font-size:14px;font-weight:700;color:var(--accent);font-family:'Noto Sans KR',sans-serif;padding:0;min-width:44px;min-height:44px;display:flex;align-items:center;}
-.search-results{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
-.search-section-label{font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--text-muted);padding:12px 16px 4px;text-transform:uppercase;}
-.search-result-item{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border);cursor:pointer;min-height:60px;}
-.search-result-item:active{background:var(--surface2);}
-.search-result-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-.search-result-name{font-size:15px;font-weight:700;}
-.search-result-meta{font-size:12px;color:var(--text-muted);margin-top:1px;}
-
-/* ── 14차: 모달 → 바텀시트 핸들 ── */
-@media(max-width:700px){
-  .modal-box::before{content:'';display:block;width:40px;height:5px;background:rgba(128,128,128,.2);border-radius:3px;margin:12px auto 0;}
-  body.dark-mode .modal-box::before{background:rgba(255,255,255,.15);}
-}
-
-/* ── 15차: 스켈레톤 로딩 ── */
-.skel{background:linear-gradient(90deg,var(--surface3) 25%,var(--surface2) 50%,var(--surface3) 75%);background-size:400px 100%;animation:shimmer 1.3s infinite;border-radius:10px;}
-.skel-hero{height:210px;background:linear-gradient(165deg,#0c1220,#142038);border-radius:0;}
-.skel-row{height:64px;border-radius:14px;margin-bottom:7px;}
-.skel-card{width:144px;height:120px;border-radius:16px;flex-shrink:0;}
-
-/* ── 15차: 탭/카드 피드백 ── */
-.tap{-webkit-tap-highlight-color:transparent;cursor:pointer;}
-.tap:active{opacity:.8;}
-
-/* ── PTR 개선 ── */
-.ptr-indicator{
-  position:fixed;
-  top:var(--sat);
-  left:50%;transform:translateX(-50%);
-  background:var(--accent);color:#fff;
-  padding:7px 20px;border-radius:0 0 20px 20px;
-  font-size:12px;font-weight:700;z-index:200;
-  transition:opacity .2s;opacity:0;pointer-events:none;
-}
-.ptr-indicator.visible{opacity:1;}
-
-/* ── 스크롤바 전역 숨김 ── */
-.content,.modal-body,.sheet-body,.m-rail,.m-chips{scrollbar-width:none;}
-.content::-webkit-scrollbar,.modal-body::-webkit-scrollbar,.sheet-body::-webkit-scrollbar,.m-rail::-webkit-scrollbar,.m-chips::-webkit-scrollbar{display:none;}
-
-/* ══ 모바일 700px 이하 ══ */
+/* ══ 모바일 전체 (700px 이하) ══ */
 @media(max-width:700px){
   :root{--sidebar-w:0px;}
 
-  /* 사이드바 드로어 */
-  .sidebar{width:280px!important;transform:translateX(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:99;box-shadow:none;}
-  .sidebar.open{transform:none;box-shadow:8px 0 40px rgba(0,0,0,.4);}
+  /* 13차: 상단 안전 영역 대응 */
+  .topbar{
+    padding-top: calc(4px + var(--safe-top));
+    height: calc(52px + var(--safe-top));
+    padding-left: calc(12px + var(--safe-left));
+    padding-right: calc(12px + var(--safe-right));
+  }
+  /* 13차: 하단 안전 영역 */
+  .bottom-nav{
+    padding-bottom: var(--safe-bottom);
+    height: calc(60px + var(--safe-bottom));
+  }
+  .bottom-nav-inner{height:60px;}
+  .has-bottom-nav .content{padding-bottom:calc(72px + var(--safe-bottom))!important;}
+  .has-bottom-nav .toast{bottom:calc(72px + var(--safe-bottom))!important;}
+  .fab{bottom:calc(76px + var(--safe-bottom))!important;}
+  .fab-menu{bottom:calc(140px + var(--safe-bottom))!important;}
+
+  /* 사이드바 */
+  .sidebar{width:280px!important;transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1);z-index:99;box-shadow:none;}
+  .sidebar.open{transform:translateX(0);box-shadow:4px 0 30px rgba(0,0,0,.35);}
   .sidebar .logo-sub,.sidebar .nav-item span:not(.nav-icon),.sidebar .db-status-text,.sidebar .nav-section-label,.nav-badge,.nav-new{display:flex!important;}
   .sidebar .logo-sub,.sidebar .nav-section-label{display:block!important;}
   .sidebar-overlay.active{display:block;}
   .main{margin-left:0!important;}
   .hamburger{display:flex;}
 
-  /* 12차: 히어로 활성화 */
+  /* 12차: 모바일 홈 특수 요소 표시 */
   .m-hero{display:block;}
-  body.hero-active .topbar{display:none;}
-  body.hero-active .alert-banner{display:none!important;}
-  body.hero-active .content{padding-top:0!important;}
+  .m-quick-row{display:flex;}
 
-  /* 일반 컨텐츠 */
-  .topbar{padding:0 14px;height:52px;}
-  .topbar-title{font-size:15px;}
-  .date-badge,.dark-toggle{display:none;}
-  .content{padding:12px 14px;padding-bottom:calc(62px + var(--sab));}
+  /* KPI 그리드 → 2열 스크롤 카드 */
+  .kpi-grid{display:none;}
 
-  /* KPI 3열 (더 컴팩트) */
-  .kpi-grid{grid-template-columns:repeat(3,1fr);gap:7px;}
-  .kpi-card{padding:10px 10px;}
-  .kpi-value{font-size:22px;}
-  .kpi-label{font-size:9px;}
-  .kpi-sub{font-size:9px;}
+  /* 콘텐츠 패딩 */
+  .content{padding:10px 12px;padding-bottom:72px;}
+  .topbar-title{font-size:15px;font-weight:900;}
+  .date-badge{display:none;}
 
-  /* 레이아웃 */
+  /* 패널 1열 */
   .panel-row.cols2,.panel-row.cols3,.panel-row.c7030{grid-template-columns:1fr;}
-  .panel-body{padding:12px 13px;}
-  .panel-header{padding:11px 13px;}
 
-  /* 14차: 모달 → 바텀시트 */
+  /* 모달 → 바텀시트 */
   .modal-overlay{align-items:flex-end!important;padding:0!important;}
-  .modal-box{
-    width:100%!important;max-width:100%!important;
-    max-height:94dvh!important;
-    border-radius:22px 22px 0 0!important;
-    padding-bottom:var(--sab)!important;
-  }
+  .modal-box{width:100%!important;max-width:100%!important;max-height:92dvh!important;border-radius:20px 20px 0 0!important;padding-bottom:env(safe-area-inset-bottom,0);}
   .modal-kpi{grid-template-columns:repeat(2,1fr);}
-  .modal-store-name{font-size:17px;}
 
   /* 알림 배너 */
-  .alert-banner{font-size:12px;padding:8px 13px;}
+  .alert-banner{font-size:12px;padding:8px 12px;}
 
-  /* 테이블 → 카드형 */
+  /* 13차: 테이블 → 카드형 (개선) */
   .data-table thead{display:none;}
   .data-table,.data-table tbody,.data-table tr,.data-table td{display:block;width:100%;}
-  .data-table tr{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:7px;padding:11px 14px;}
-  .data-table td{padding:3px 0;border:none;font-size:13px;}
+  .data-table tr{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;padding:12px 14px;transition:background .15s;}
+  .data-table tr:active{background:var(--surface2);}
+  .data-table td{padding:2px 0;border:none;font-size:13px;}
   .data-table td[data-label]::before{content:attr(data-label);font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-right:6px;}
 
-  /* 하단 네비 */
+  /* 하단 네비 표시 */
   .bottom-nav{display:block;}
 
-  /* FAB – Safe Area */
-  .fab{display:flex;bottom:calc(68px + var(--sab));right:calc(16px + var(--sar));}
+  /* 13차: 하단 네비 아이콘 크기 증가 */
+  .bnav-icon{font-size:22px;}
+  .bnav-label{font-size:10px;font-weight:700;}
 
-  /* 헬스 그리드 숨기고 리스트 표시 */
-  .health-grid{display:none!important;}
-  .m-hlist-wrap{display:block;}
+  /* FAB 표시 */
+  .fab{display:flex;width:56px!important;height:56px!important;font-size:26px;}
 
-  /* 필터 가로 스크롤 */
-  .health-controls,.filter-bar{overflow-x:auto;flex-wrap:nowrap;gap:6px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
-  .health-controls::-webkit-scrollbar,.filter-bar::-webkit-scrollbar{display:none;}
-  .filter-btn{flex-shrink:0;min-height:40px;}
-  .filter-select{min-width:110px;flex-shrink:0;font-size:16px;}/* iOS 줌 방지 */
-
-  /* 그리드 */
+  /* 리포트 2열→1열 */
   .report-grid{grid-template-columns:1fr;}
+
+  /* 헬스 그리드 2열 */
+  .health-grid{grid-template-columns:repeat(2,1fr);}
+
+  /* 인스펙터 2열 */
   .inspector-grid{grid-template-columns:repeat(2,1fr);}
+
+  /* 토스트 위치 */
+  .toast{bottom:calc(76px + var(--safe-bottom))!important;right:12px;left:12px;text-align:center;}
+
+  /* 14차: 패널 패딩 최적화 */
+  .panel-header{padding:12px 14px;}
+  .panel-body{padding:12px 14px;}
+  .panel-title{font-size:14px;}
+
+  /* 14차: 브랜드바 → 가로 스크롤 */
+  .brand-bars{flex-direction:row;overflow-x:auto;gap:10px;padding-bottom:4px;scrollbar-width:none;}
+  .brand-bars::-webkit-scrollbar{display:none;}
+  .brand-bar-item{min-width:100px;flex-shrink:0;}
+
+  /* 14차: 미흡 그룹 */
+  .fail-group-store{font-size:15px;}
+  .fail-group-header{padding:14px;}
+
+  /* 15차: 스케줄 행 */
+  .schedule-row{padding:12px 14px;gap:10px;}
+  .schedule-store{font-size:14px;}
+
+  /* hq 그리드 */
+  .hq-grid{grid-template-columns:1fr;}
+  .assign-grid{grid-template-columns:1fr;}
   .remind-grid{grid-template-columns:repeat(2,1fr);}
-  .hq-grid,.assign-grid{grid-template-columns:1fr;}
 
-  /* 입력 – iOS 자동 확대 방지 */
-  input,select,textarea{font-size:16px!important;}
+  /* 15차: 상태바 간소화 */
+  .status-bar-wrap{flex-wrap:wrap;gap:10px;padding:12px 14px;}
+  .status-legend{display:none;}
+  .status-bar-track{min-width:100%;order:-1;}
 
-  /* 토스트 */
-  .toast{bottom:calc(68px + var(--sab))!important;right:14px;left:14px;text-align:center;border-radius:14px;font-size:13px;}
+  /* 빈 상태 */
+  .empty-state{padding:30px 20px;}
 }
+/* ══ 달력 뷰 CSS ══ */
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding:0 4px;}
+.cal-kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+.cal-kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px;text-align:center;}
+.cal-kpi-val{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;margin-bottom:2px;}
+.cal-kpi-val.blue{color:var(--blue);}
+.cal-kpi-val.green{color:var(--good);}
+.cal-kpi-val.orange{color:var(--warn);}
+.cal-kpi-val.red{color:var(--poor);}
+.cal-kpi-val.purple{color:var(--purple);}
+.cal-kpi-label{font-size:10px;font-weight:700;color:var(--text-muted);}
+.cal-header{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--border);}
+.cal-header-day{padding:8px 0;text-align:center;font-size:11px;font-weight:800;color:var(--text-muted);}
+.cal-header-day.sun{color:#ef4444;}
+.cal-header-day.sat{color:#2563eb;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border);}
+.cal-cell{background:var(--surface);min-height:64px;padding:5px;position:relative;transition:background .15s;}
+.cal-cell:active{background:var(--surface2);}
+.cal-cell.empty{background:var(--surface2);}
+.cal-cell.today{background:var(--accent-bg);}
+.cal-cell.today .cal-day-num{color:var(--accent);font-weight:900;}
+.cal-cell.good{background:linear-gradient(135deg,#f0fdf4,#fff);}
+.cal-cell.mid{background:linear-gradient(135deg,#fffbeb,#fff);}
+.cal-cell.low{background:linear-gradient(135deg,#fef2f2,#fff);}
+.cal-cell.no-insp{background:var(--surface);}
+.cal-day-num{font-size:12px;font-weight:700;color:var(--text-dim);margin-bottom:3px;}
+.cal-count{font-size:10px;font-weight:800;color:var(--accent);line-height:1.2;}
+.cal-score{font-family:'DM Mono',monospace;font-size:11px;font-weight:700;line-height:1.2;}
+.cal-cell.good .cal-score{color:var(--good);}
+.cal-cell.mid .cal-score{color:var(--warn);}
+.cal-cell.low .cal-score{color:var(--poor);}
+.cal-action-dot{font-size:10px;position:absolute;bottom:3px;right:3px;}
+.cal-legend{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;justify-content:center;}
+.cal-legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-dim);}
+.cal-legend-dot{width:10px;height:10px;border-radius:2px;}
+.cal-legend-dot.good{background:#f0fdf4;border:1.5px solid var(--good);}
+.cal-legend-dot.mid{background:#fffbeb;border:1.5px solid var(--warn);}
+.cal-legend-dot.low{background:#fef2f2;border:1.5px solid var(--poor);}
+.cal-legend-dot.no-insp{background:var(--surface2);border:1.5px solid var(--border2);}
 
-/* 데스크탑에서 모바일 전용 요소 숨김 */
-@media(min-width:701px){
-  .m-hero{display:none!important;}
-  .m-hlist-wrap{display:none!important;}
+@media(max-width:700px){
+  .cal-cell{min-height:52px;padding:4px;}
+  .cal-day-num{font-size:11px;}
+  .cal-score{font-size:10px;}
+  .cal-kpi-val{font-size:22px;}
 }
-
-.m-hlist-wrap{display:none;}
 </style>
 </head>
 <body>
@@ -1143,52 +957,65 @@ body.dark-mode .bottom-nav{background:rgba(15,17,23,.88);}
   <div class="sheet-box">
     <div class="sheet-handle"></div>
     <div class="sheet-header">
-      <div class="sheet-title">전체 메뉴</div>
+      <div class="sheet-title">📋 전체 메뉴</div>
       <button class="sheet-close" onclick="closeMoreSheet()">✕</button>
     </div>
     <div class="sheet-body">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <button onclick="setPage('trend');closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:18px 10px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center">
-          <div style="font-size:24px;margin-bottom:6px">📈</div><div style="font-size:13px;font-weight:700;color:var(--text)">트렌드</div>
+      <!-- 현장 슈퍼바이저 -->
+      <div style="font-size:10px;font-weight:800;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;margin-bottom:8px">현장 · 슈퍼바이저</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
+        <button onclick="setPage('myStores');closeMoreSheet()" style="background:linear-gradient(135deg,#1a1f2e,#252d40);border:none;border-radius:14px;padding:16px 8px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center;color:#fff;-webkit-tap-highlight-color:transparent;min-height:80px">
+          <div style="font-size:26px;margin-bottom:5px">📍</div><div style="font-size:12px;font-weight:700">담당 매장</div>
         </button>
-        <button onclick="setPage('myStores');closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:18px 10px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center">
-          <div style="font-size:24px;margin-bottom:6px">📍</div><div style="font-size:13px;font-weight:700;color:var(--text)">내 담당 매장</div>
+        <button onclick="setPage('timeline');closeMoreSheet()" style="background:linear-gradient(135deg,#1a1f2e,#252d40);border:none;border-radius:14px;padding:16px 8px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center;color:#fff;-webkit-tap-highlight-color:transparent;min-height:80px">
+          <div style="font-size:26px;margin-bottom:5px">🕐</div><div style="font-size:12px;font-weight:700">타임라인</div>
         </button>
-        <button onclick="setPage('riskAlert');closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:18px 10px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center">
-          <div style="font-size:24px;margin-bottom:6px">🚨</div><div style="font-size:13px;font-weight:700;color:var(--text)">위험 감지</div>
+        <button onclick="openSearchOverlay();closeMoreSheet()" style="background:linear-gradient(135deg,#1a1f2e,#252d40);border:none;border-radius:14px;padding:16px 8px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center;color:#fff;-webkit-tap-highlight-color:transparent;min-height:80px">
+          <div style="font-size:26px;margin-bottom:5px">🔍</div><div style="font-size:12px;font-weight:700">매장 검색</div>
         </button>
-        <button onclick="setPage('timeline');closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:18px 10px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center">
-          <div style="font-size:24px;margin-bottom:6px">🕐</div><div style="font-size:13px;font-weight:700;color:var(--text)">타임라인</div>
+      </div>
+      <!-- 본사 분석 -->
+      <div style="font-size:10px;font-weight:800;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;margin-bottom:8px">본사 분석</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
+        <button onclick="setPage('riskAlert');closeMoreSheet()" style="background:var(--poor-bg);border:1.5px solid rgba(220,38,38,.2);border-radius:14px;padding:16px 8px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center;-webkit-tap-highlight-color:transparent;min-height:80px">
+          <div style="font-size:26px;margin-bottom:5px">🚨</div><div style="font-size:12px;font-weight:700;color:var(--poor)">위험 감지</div>
         </button>
-        <button onclick="setPage('weeklyReport');closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:18px 10px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center">
-          <div style="font-size:24px;margin-bottom:6px">📰</div><div style="font-size:13px;font-weight:700;color:var(--text)">주간 리포트</div>
+        <button onclick="setPage('heatmap');closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:16px 8px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center;-webkit-tap-highlight-color:transparent;min-height:80px">
+          <div style="font-size:26px;margin-bottom:5px">🗺️</div><div style="font-size:12px;font-weight:700;color:var(--text)">히트맵</div>
         </button>
-        <button onclick="setPage('heatmap');closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:18px 10px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center">
-          <div style="font-size:24px;margin-bottom:6px">🗺️</div><div style="font-size:13px;font-weight:700;color:var(--text)">브랜드 히트맵</div>
+        <button onclick="setPage('weeklyReport');closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:16px 8px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center;-webkit-tap-highlight-color:transparent;min-height:80px">
+          <div style="font-size:26px;margin-bottom:5px">📰</div><div style="font-size:12px;font-weight:700;color:var(--text)">주간 리포트</div>
         </button>
-        <button onclick="setPage('repeat');closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:18px 10px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center">
-          <div style="font-size:24px;margin-bottom:6px">🔁</div><div style="font-size:13px;font-weight:700;color:var(--text)">반복 미흡</div>
+        <button onclick="setPage('trend');closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:16px 8px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center;-webkit-tap-highlight-color:transparent;min-height:80px">
+          <div style="font-size:26px;margin-bottom:5px">📈</div><div style="font-size:12px;font-weight:700;color:var(--text)">트렌드</div>
         </button>
-        <button onclick="setPage('compare');closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:18px 10px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center">
-          <div style="font-size:24px;margin-bottom:6px">📊</div><div style="font-size:13px;font-weight:700;color:var(--text)">매장 비교</div>
+        <button onclick="setPage('compare');closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:16px 8px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center;-webkit-tap-highlight-color:transparent;min-height:80px">
+          <div style="font-size:26px;margin-bottom:5px">📊</div><div style="font-size:12px;font-weight:700;color:var(--text)">매장 비교</div>
         </button>
-        <button onclick="setPage('report');closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:18px 10px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center">
-          <div style="font-size:24px;margin-bottom:6px">📋</div><div style="font-size:13px;font-weight:700;color:var(--text)">월간 리포트</div>
+        <button onclick="setPage('repeat');closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:16px 8px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center;-webkit-tap-highlight-color:transparent;min-height:80px">
+          <div style="font-size:26px;margin-bottom:5px">🔁</div><div style="font-size:12px;font-weight:700;color:var(--text)">반복 미흡</div>
         </button>
-        <button onclick="setPage('history');closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:18px 10px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center">
-          <div style="font-size:24px;margin-bottom:6px">📁</div><div style="font-size:13px;font-weight:700;color:var(--text)">점검 이력</div>
+      </div>
+      <!-- 관리 -->
+      <div style="font-size:10px;font-weight:800;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;margin-bottom:8px">관리</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
+        <button onclick="setPage('report');closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:16px 8px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center;-webkit-tap-highlight-color:transparent;min-height:80px">
+          <div style="font-size:26px;margin-bottom:5px">📋</div><div style="font-size:12px;font-weight:700;color:var(--text)">월간 리포트</div>
         </button>
-        <button onclick="setPage('inspector');closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:18px 10px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center">
-          <div style="font-size:24px;margin-bottom:6px">👤</div><div style="font-size:13px;font-weight:700;color:var(--text)">점검자 통계</div>
+        <button onclick="setPage('history');closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:16px 8px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center;-webkit-tap-highlight-color:transparent;min-height:80px">
+          <div style="font-size:26px;margin-bottom:5px">📁</div><div style="font-size:12px;font-weight:700;color:var(--text)">점검 이력</div>
         </button>
-        <button onclick="setPage('schedule');closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:18px 10px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center">
-          <div style="font-size:24px;margin-bottom:6px">📅</div><div style="font-size:13px;font-weight:700;color:var(--text)">점검 스케줄</div>
+        <button onclick="setPage('inspector');closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:16px 8px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center;-webkit-tap-highlight-color:transparent;min-height:80px">
+          <div style="font-size:26px;margin-bottom:5px">👤</div><div style="font-size:12px;font-weight:700;color:var(--text)">점검자</div>
         </button>
-        <button onclick="toggleDarkMode();closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:18px 10px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center">
-          <div style="font-size:24px;margin-bottom:6px">🌙</div><div style="font-size:13px;font-weight:700;color:var(--text)">다크모드</div>
+        <button onclick="setPage('schedule');closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:16px 8px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center;-webkit-tap-highlight-color:transparent;min-height:80px">
+          <div style="font-size:26px;margin-bottom:5px">📅</div><div style="font-size:12px;font-weight:700;color:var(--text)">스케줄</div>
         </button>
-        <button onclick="loadAll();closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:18px 10px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center">
-          <div style="font-size:24px;margin-bottom:6px">↻</div><div style="font-size:13px;font-weight:700;color:var(--text)">새로고침</div>
+        <button onclick="toggleDarkMode();closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:16px 8px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center;-webkit-tap-highlight-color:transparent;min-height:80px">
+          <div style="font-size:26px;margin-bottom:5px">🌙</div><div style="font-size:12px;font-weight:700;color:var(--text)">다크모드</div>
+        </button>
+        <button onclick="loadAll();closeMoreSheet()" style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:16px 8px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-align:center;-webkit-tap-highlight-color:transparent;min-height:80px">
+          <div style="font-size:26px;margin-bottom:5px">↻</div><div style="font-size:12px;font-weight:700;color:var(--text)">새로고침</div>
         </button>
       </div>
     </div>
@@ -1259,7 +1086,7 @@ body.dark-mode .bottom-nav{background:rgba(15,17,23,.88);}
 <aside class="sidebar">
   <div class="sidebar-logo">
     <div class="logo-main">PANASIA</div>
-    <div class="logo-sub">Dinehill · HQ v3</div>
+    <div class="logo-sub">Dinehill · HQ v4</div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-section-label">메인</div>
@@ -1291,67 +1118,6 @@ body.dark-mode .bottom-nav{background:rgba(15,17,23,.88);}
 
 <!-- MAIN -->
 <main class="main">
-
-  <!-- 12차: 모바일 히어로 (overview 전용, 모바일에서만 표시) -->
-  <div class="m-hero" id="mobileHero" style="display:none">
-    <div class="m-hero-bar">
-      <div>
-        <div class="m-hero-brand">PANASIA DINEHILL</div>
-        <div class="m-hero-date" id="mHeroDate"></div>
-      </div>
-      <div class="m-hero-actions">
-        <button class="m-hbtn" onclick="openSearchOverlay()">🔍</button>
-        <button class="m-hbtn" id="mDarkBtn" onclick="toggleDarkMode()">🌙</button>
-        <button class="m-hbtn" onclick="loadAll()">↻</button>
-      </div>
-    </div>
-    <!-- 게이지 + 스탯 -->
-    <div class="m-gauge-row">
-      <div class="m-gauge">
-        <svg width="88" height="88" viewBox="0 0 88 88">
-          <circle class="m-gauge-track" cx="44" cy="44" r="36"/>
-          <circle class="m-gauge-arc" id="mGaugeArc" cx="44" cy="44" r="36"
-            stroke="#3b82f6"
-            stroke-dasharray="226.2"
-            stroke-dashoffset="226.2"/>
-        </svg>
-        <div class="m-gauge-center">
-          <div class="m-gauge-num" id="mGaugeNum">–</div>
-          <div class="m-gauge-cap">전체평균</div>
-        </div>
-      </div>
-      <div class="m-stats">
-        <div class="m-stat"><span class="m-stat-lbl">이번달</span><span class="m-stat-val blue" id="mStatMonth">–</span></div>
-        <div class="m-stat"><span class="m-stat-lbl">위험매장</span><span class="m-stat-val red" id="mStatDanger">–</span></div>
-        <div class="m-stat"><span class="m-stat-lbl">즉시조치</span><span class="m-stat-val yellow" id="mStatAction">–</span></div>
-        <div class="m-stat"><span class="m-stat-lbl">미점검</span><span class="m-stat-val" id="mStatUninsp">–</span></div>
-      </div>
-    </div>
-    <!-- 상태 칩 -->
-    <div class="m-chips" id="mChips">
-      <div class="m-chip tap" onclick="setPage('health')">
-        <div class="m-chip-n" id="mChipTotal">–</div>
-        <div class="m-chip-l">전체매장</div>
-      </div>
-      <div class="m-chip c-good tap" onclick="setPage('health');setTimeout(()=>setHealthFilter('good'),80)">
-        <div class="m-chip-n" id="mChipGood">–</div>
-        <div class="m-chip-l">✅ 양호</div>
-      </div>
-      <div class="m-chip c-warn tap" onclick="setPage('health');setTimeout(()=>setHealthFilter('warning'),80)">
-        <div class="m-chip-n" id="mChipWarn">–</div>
-        <div class="m-chip-l">⚠️ 주의</div>
-      </div>
-      <div class="m-chip c-danger tap" onclick="setPage('health');setTimeout(()=>setHealthFilter('danger'),80)">
-        <div class="m-chip-n" id="mChipDanger">–</div>
-        <div class="m-chip-l">🔴 위험</div>
-      </div>
-      <div class="m-chip tap" onclick="setPage('health');setTimeout(()=>setHealthFilter('uninspected'),80)">
-        <div class="m-chip-n" id="mChipUninsp">–</div>
-        <div class="m-chip-l">⬜ 미점검</div>
-      </div>
-    </div>
-  </div>
-
   <!-- ALERT BANNER -->
   <div class="alert-banner hidden" id="alertBanner">
     <span>🔔</span>
@@ -1458,7 +1224,7 @@ function openSearchOverlay() {
   document.getElementById('searchRecent').innerHTML = recent.map(i=>{
     const store = (cache.stores||[]).find(s=>s.id===i.store_id);
     const brand = store?.brands?.name||'-';
-    const sc = Math.round((i.score||0)*100);
+    const sc = Math.round(i.score||0);
     const cls = sc>=80?'good':sc>=70?'mid':'low';
     return `<div class="search-result-item" onclick="openDetail('${i.id}');closeSearchOverlay()">
       <div class="search-result-icon" style="background:var(--surface2)">🏪</div>
@@ -1486,7 +1252,7 @@ function doSearch(q) {
   if(!matched.length) { resultsEl.innerHTML='<div class="empty-state"><div class="empty-state-icon">🔍</div><div class="empty-state-text">검색 결과 없음</div></div>'; return; }
   resultsEl.innerHTML = `<div class="search-section-label">${matched.length}개 매장</div>` + matched.map(s=>{
     const latest = inspections.filter(i=>i.store_id===s.id).sort((a,b)=>b.inspected_at?.localeCompare(a.inspected_at))[0];
-    const sc = latest ? Math.round((latest.score||0)*100) : null;
+    const sc = latest ? Math.round(latest.score||0) : null;
     const cls = sc===null?'none':sc>=80?'good':sc>=70?'mid':'low';
     return `<div class="search-result-item" onclick="${latest?`openDetail('${latest.id}')`:`setPage('stores')`};closeSearchOverlay()">
       <div class="search-result-icon" style="background:var(--${s.brands?.name?.includes('유주')?'purple':'blue'}-bg)">🏪</div>
@@ -1509,14 +1275,15 @@ function doSearch(q) {
   document.addEventListener('touchmove', e=>{
     if(!pulling) return;
     const dy = e.touches[0].clientY - startY;
-    if(dy>60) { ptr.classList.add('visible'); ptr.textContent='↑ 손가락을 떼면 새로고침'; }
-    else if(dy>20) { ptr.classList.add('visible'); ptr.textContent='↓ 당겨서 새로고침'; }
+    if(dy>120) { ptr.classList.add('visible'); ptr.textContent='↑ 손가락을 떼면 새로고침'; }
+    else if(dy>60) { ptr.classList.add('visible'); ptr.textContent='↓ 더 당기면 새로고침'; }
+    else { ptr.classList.remove('visible'); }
   },{passive:true});
   document.addEventListener('touchend', e=>{
     if(!pulling) return;
     pulling=false;
     const dy = e.changedTouches[0].clientY - startY;
-    if(dy>60) { ptr.textContent='↻ 새로고침 중...'; loadAll().finally(()=>{ ptr.classList.remove('visible'); }); }
+    if(dy>120) { ptr.textContent='↻ 새로고침 중...'; loadAll().finally(()=>{ ptr.classList.remove('visible'); }); }
     else { ptr.classList.remove('visible'); }
   },{passive:true});
 })();
@@ -1539,25 +1306,25 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('todayBadge').textContent =
     now.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'short'});
 
-  // 14차: 다크모드 복원
+  // 11차: 다크모드 복원
   try {
     if(localStorage.getItem('panasia_dark')==='1') {
       document.body.classList.add('dark-mode');
-      document.querySelectorAll('#darkToggleBtn,#mDarkBtn').forEach(b=>{ if(b) b.textContent='☀️'; });
+      document.getElementById('darkToggleBtn').textContent='☀️';
     }
   } catch(e){}
 
-  // 14차: 오프라인 감지
+  // 11차: 오프라인이면 배너 바로 표시
   if(!navigator.onLine) {
     document.getElementById('offlineBar').classList.add('show');
     document.body.classList.add('offline-mode');
   }
 
-  // 15차: 리사이즈 시 현재 페이지 재렌더 (가로/세로 전환 대응)
-  let resizeTimer;
-  window.addEventListener('resize', ()=>{
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(()=>renderPage(currentPage), 200);
+  // 11차: 햅틱 피드백 - 버튼 탭 시 진동
+  document.addEventListener('click', e=>{
+    if(e.target.closest('.bnav-item,.fab,.btn,.store-card,.health-card,.fail-group-header,.sv-store-row')) {
+      if(navigator.vibrate) navigator.vibrate(8);
+    }
   });
 
   loadAll();
@@ -1602,8 +1369,6 @@ async function loadAll() {
     }
 
     renderPage(currentPage);
-    // 12차: 히어로 데이터 업데이트
-    updateMobileHero();
   } catch(e) {
     document.getElementById('dbDot').className = 'db-dot error';
     document.getElementById('dbText').textContent = 'DB 오류';
@@ -1634,6 +1399,8 @@ const PAGE_TITLES = {
 };
 
 function setPage(page) {
+  // 13차: 현재 페이지 스크롤 위치 저장
+  if(typeof saveScrollPosition === 'function') saveScrollPosition(currentPage);
   currentPage = page;
   document.querySelectorAll('.nav-item').forEach(el => {
     el.classList.toggle('active', el.getAttribute('onclick')?.includes(`'${page}'`));
@@ -1641,13 +1408,9 @@ function setPage(page) {
   document.getElementById('pageTitle').textContent = PAGE_TITLES[page] || page;
   Object.values(chartInstances).forEach(c=>{try{c.destroy();}catch(e){}});
   chartInstances = {};
+  // 5차: 바텀 네비 동기화
   syncBottomNav(page);
-  // 12차: overview가 아닌 페이지에서 히어로 숨기기
-  if(page !== 'overview') {
-    const hero = document.getElementById('mobileHero');
-    if(hero) hero.style.display = 'none';
-    document.body.classList.remove('hero-active');
-  }
+  // 모바일에서 메뉴 선택 시 사이드바 자동 닫기
   if(window.innerWidth <= 700) closeSidebar();
   renderPage(page);
 }
@@ -1671,6 +1434,13 @@ function renderPage(page) {
 // ══════════════════════════════════════════
 // UTILS
 // ══════════════════════════════════════════
+function getGreeting(){
+  const h=new Date().getHours();
+  if(h<6)return '🌙 야간 근무 중';
+  if(h<12)return '☀️ 좋은 아침입니다';
+  if(h<18)return '🌤️ 안녕하세요';
+  return '🌆 수고하셨습니다';
+}
 function getLatestInspByStore() {
   const map = {};
   (cache.inspections||[]).forEach(i=>{
@@ -1712,9 +1482,9 @@ function scorePillClass(score) {
 
 function calcHealth(store, allInsp) {
   const storeInsps = (allInsp||[]).filter(i=>i.store_id===store.id)
-    .sort((a,b)=>b.inspected_at.localeCompare(a.inspected_at));
+    .sort((a,b)=>(b.inspected_at||'').localeCompare(a.inspected_at||''));
   const latest = storeInsps[0];
-  if(!latest) return {health:0,status:'uninspected',inspCount:0,latest:null,storeInsps};
+  if(!latest) return {health:0,status:'uninspected',inspCount:0,latest:null,storeInsps:[],daysSince:null};
   let health = Math.round(latest.score||0);
   const daysSince = Math.floor((new Date()-new Date(latest.inspected_at))/86400000);
   if((latest.fail_count||0)>=10) health = Math.max(0,health-5);
@@ -1758,13 +1528,6 @@ function renderBrandBars() {
 // PAGE: OVERVIEW
 // ══════════════════════════════════════════
 function renderOverview(el) {
-  // 12차: 모바일 전용 레이아웃
-  if(window.innerWidth <= 700) { renderMobileOverview(el); return; }
-  // 데스크탑 – 히어로 숨기기
-  const hero = document.getElementById('mobileHero');
-  if(hero) hero.style.display = 'none';
-  document.body.classList.remove('hero-active');
-
   const insp = cache.inspections||[];
   const stores = cache.stores||[];
   const latestMap = getLatestInspByStore();
@@ -1796,7 +1559,87 @@ function renderOverview(el) {
     ? `<div class="kpi-trend ${monthDiff>=0?'up':'down'}">${monthDiff>=0?'▲':'▼'} ${Math.abs(monthDiff)}% vs 전월</div>`
     : '';
 
+  // 12차: 위험 매장 가로 스크롤 카드
+  const sortedStores = allLatest.sort((a,b)=>(a.score||0)-(b.score||0));
+  const dangerStores = sortedStores.filter(i=>(i.score||0)<70).slice(0,8);
+  const mStoreCards = dangerStores.length>0
+    ? dangerStores.map(i=>{
+        const sc=i.score?Math.round(i.score):0;
+        const cls=sc>=85?'good':sc>=70?'warning':'danger';
+        const scoreClass=sc>=85?'high':sc>=70?'mid':'low';
+        return `<div class="m-store-mini ${cls}" onclick="openDetail('${i.id}')">
+          <div class="m-store-mini-name">${i.stores?.name||'-'}</div>
+          <div class="m-store-mini-brand">${i.stores?.brands?.name||'-'}</div>
+          <div class="m-store-mini-score ${scoreClass}">${sc}%</div>
+          <div class="m-store-mini-date">${(i.inspected_at||'').slice(0,10)}</div>
+        </div>`;
+      }).join('')
+    : `<div style="padding:20px;color:var(--text-muted);font-size:13px;font-weight:700">✅ 모든 매장 양호</div>`;
+
+  // 12차: 위험 감지 요약
+  const risks = detectRisks();
+  const criticals = risks.filter(r=>r.type==='critical');
+
   el.innerHTML = `<div class="fade-in">
+
+    <!-- 12차: 모바일 히어로 카드 (데스크탑 숨김) -->
+    <div class="m-hero">
+      <div class="m-hero-top">
+        <div>
+          <div class="m-hero-greeting">${getGreeting()}</div>
+          <div class="m-hero-title">PANASIA<br>DINEHILL</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:4px">전체 평균</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:42px;line-height:1;color:${overallAvg>=85?'#4ade80':overallAvg>=70?'#fb923c':'#f87171'}">${overallAvg}%</div>
+          <div class="m-hero-date">${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}</div>
+        </div>
+      </div>
+      <div class="m-hero-kpis">
+        <div class="m-hero-kpi">
+          <div class="m-hero-kpi-val red">${dangerCnt}</div>
+          <div class="m-hero-kpi-label">위험<br>매장</div>
+        </div>
+        <div class="m-hero-kpi">
+          <div class="m-hero-kpi-val orange">${actionItems.length}</div>
+          <div class="m-hero-kpi-label">즉시<br>조치</div>
+        </div>
+        <div class="m-hero-kpi">
+          <div class="m-hero-kpi-val blue">${uninspected.length}</div>
+          <div class="m-hero-kpi-label">미점검<br>매장</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12차: 빠른 액션 버튼 (모바일) -->
+    <div class="m-quick-row">
+      <div class="m-quick-btn ${criticals.length>0?'alert':''}" onclick="setPage('riskAlert')">
+        <div class="m-quick-btn-icon">🚨</div>
+        <div class="m-quick-btn-label">위험감지${criticals.length>0?` (${criticals.length})`:''}</div>
+      </div>
+      <div class="m-quick-btn" onclick="setPage('myStores')">
+        <div class="m-quick-btn-icon">📍</div>
+        <div class="m-quick-btn-label">담당매장</div>
+      </div>
+      <div class="m-quick-btn" onclick="setPage('timeline')">
+        <div class="m-quick-btn-icon">🕐</div>
+        <div class="m-quick-btn-label">타임라인</div>
+      </div>
+      <div class="m-quick-btn" onclick="setPage('fails')">
+        <div class="m-quick-btn-icon">⚠️</div>
+        <div class="m-quick-btn-label">미흡항목</div>
+      </div>
+      <div class="m-quick-btn" onclick="setPage('weeklyReport')">
+        <div class="m-quick-btn-icon">📰</div>
+        <div class="m-quick-btn-label">주간리포트</div>
+      </div>
+      <div class="m-quick-btn" onclick="openSearchOverlay()">
+        <div class="m-quick-btn-icon">🔍</div>
+        <div class="m-quick-btn-label">매장검색</div>
+      </div>
+    </div>
+
+    <!-- 데스크탑 KPI 그리드 -->
     <div class="kpi-grid">
       <div class="kpi-card blue">
         <div class="kpi-label">전체 매장</div>
@@ -1845,14 +1688,23 @@ function renderOverview(el) {
         <div class="status-legend-item"><div class="status-legend-dot" style="background:#22c55e"></div>양호 ${goodCnt}</div>
         <div class="status-legend-item"><div class="status-legend-dot" style="background:#d1d5db"></div>미점검 ${uninspCnt}</div>
       </div>
-      <button class="status-detail-btn" onclick="setPage('health')">상세 보기 →</button>
+      <button class="status-detail-btn" onclick="setPage('health')">상세 →</button>
     </div>
+
+    <!-- 12차: 위험 매장 가로 스크롤 (모바일 친화) -->
+    ${dangerStores.length>0?`
+    <div class="m-section-header" style="margin-bottom:8px">
+      <div class="m-section-title">🔴 관리 필요 매장</div>
+      <div class="m-section-more" onclick="setPage('health')">전체 →</div>
+    </div>
+    <div class="m-store-scroll">${mStoreCards}</div>
+    `:''}
 
     <div class="panel-row cols2">
       <div class="panel">
         <div class="panel-header">
           <div class="panel-title">최근 점검 내역</div>
-          <button class="btn sm" onclick="setPage('history')">전체 보기</button>
+          <button class="btn sm" onclick="setPage('history')">전체</button>
         </div>
         <div class="panel-body" style="padding:0">
           <table class="data-table">
@@ -1869,11 +1721,11 @@ function renderOverview(el) {
                   else changeTxt='±0%';
                 }
                 return `<tr class="clickable" onclick="openDetail('${i.id}')">
-                  <td style="font-weight:700">${i.stores?.name||'-'}</td>
-                  <td style="color:var(--text-dim);font-size:12px">${i.stores?.brands?.name||'-'}</td>
-                  <td style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-dim)">${i.inspected_at||'-'}</td>
-                  <td><span class="score-pill ${scorePillClass(i.score)}">${i.score?Math.round(i.score)+'%':'미점검'}</span></td>
-                  <td>${changeTxt?`<span class="change-badge ${changeClass}">${changeTxt}</span>`:'-'}</td>
+                  <td data-label="매장" style="font-weight:700">${i.stores?.name||'-'}</td>
+                  <td data-label="브랜드" style="color:var(--text-dim);font-size:12px">${i.stores?.brands?.name||'-'}</td>
+                  <td data-label="날짜" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-dim)">${i.inspected_at||'-'}</td>
+                  <td data-label="점수"><span class="score-pill ${scorePillClass(i.score)}">${i.score?Math.round(i.score)+'%':'미점검'}</span></td>
+                  <td data-label="변화">${changeTxt?`<span class="change-badge ${changeClass}">${changeTxt}</span>`:'-'}</td>
                 </tr>`;
               }).join('');
             })()}</tbody>
@@ -2280,30 +2132,19 @@ function renderHealth(el) {
   else if(healthSort==='name') data.sort((a,b)=>a.store.name.localeCompare(b.store.name,'ko'));
   else if(healthSort==='date') data.sort((a,b)=>(b.latest?.inspected_at||'').localeCompare(a.latest?.inspected_at||''));
 
-  const filterBtns = `<div class="health-controls">
-    ${['all','good','warning','danger','uninspected'].map(f=>`
-      <button class="filter-btn ${healthFilter===f?'active':''}" onclick="setHealthFilter('${f}')">
-        ${{all:'전체',good:'✅ 양호',warning:'⚠️ 주의',danger:'🔴 위험',uninspected:'⬜ 미점검'}[f]}
-      </button>`).join('')}
-    <div style="margin-left:auto;display:flex;gap:5px;flex-shrink:0">
-      ${['score','name','date'].map(s=>`
-        <button class="filter-btn ${healthSort===s?'active':''}" onclick="setHealthSort('${s}')">
-          ${{score:'점수순',name:'가나다',date:'점검일'}[s]}
+  el.innerHTML = `<div class="fade-in">
+    <div class="health-controls">
+      ${['all','good','warning','danger','uninspected'].map(f=>`
+        <button class="filter-btn ${healthFilter===f?'active':''}" onclick="setHealthFilter('${f}')">
+          ${{all:'전체',good:'✅ 양호',warning:'⚠️ 주의',danger:'🔴 위험',uninspected:'⬜ 미점검'}[f]}
         </button>`).join('')}
-    </div>
-  </div>`;
-
-  // 13차: 모바일 – 리스트형
-  if(window.innerWidth <= 700) {
-    el.innerHTML = `<div class="fade-in">${filterBtns}
-      <div class="m-hlist-wrap">
-        <div class="m-hlist">${data.map(d=>renderMobileHealthItem(d)).join('')}</div>
+      <div style="margin-left:auto;display:flex;gap:5px">
+        ${['score','name','date'].map(s=>`
+          <button class="filter-btn ${healthSort===s?'active':''}" onclick="setHealthSort('${s}')">
+            ${{score:'점수순',name:'가나다',date:'점검일'}[s]}
+          </button>`).join('')}
       </div>
-    </div>`;
-    return;
-  }
-
-  el.innerHTML = `<div class="fade-in">${filterBtns}
+    </div>
     <div class="health-grid">
       ${data.map((d,idx)=>renderHealthCard(d,idx)).join('')}
     </div>
@@ -2313,37 +2154,6 @@ function renderHealth(el) {
     const scores = d.storeInsps.map(i=>i.score||0).filter(s=>s>0).slice(0,6).reverse();
     if(scores.length>1) drawSparkline(`spark-${idx}`, scores, d.status);
   });
-}
-
-// 13차: 모바일 건강도 아이템
-function renderMobileHealthItem(d) {
-  const {store,health,status,daysSince} = d;
-  const c = status==='good'?'#22c55e':status==='warning'?'#f59e0b':status==='danger'?'#ef4444':'#9ca3af';
-  const r = 21; const circ = 2*Math.PI*r;
-  const offset = status==='uninspected' ? circ : circ - (health/100)*circ;
-  const scoreCls = status==='good'?'var(--good)':status==='warning'?'var(--warn)':status==='danger'?'var(--poor)':'var(--text-muted)';
-  return `<div class="m-hitem tap" onclick="openDetailByStore('${store.id}')">
-    <div class="m-hring">
-      <svg width="50" height="50" viewBox="0 0 50 50" style="transform:rotate(-90deg)">
-        <circle fill="none" stroke="var(--surface3)" stroke-width="5" cx="25" cy="25" r="${r}"/>
-        <circle fill="none" stroke="${c}" stroke-width="5" stroke-linecap="round"
-          cx="25" cy="25" r="${r}"
-          stroke-dasharray="${circ.toFixed(1)}"
-          stroke-dashoffset="${offset.toFixed(1)}"
-          style="transition:stroke-dashoffset .9s ease"/>
-      </svg>
-      <div class="m-hring-val" style="color:${c}">${status==='uninspected'?'–':health}</div>
-    </div>
-    <div class="m-hinfo">
-      <div class="m-hname">${store.name}</div>
-      <div class="m-hbrand">${store.brands?.name||'-'}</div>
-      <div class="m-hbar"><div class="m-hbar-fill" style="width:${health}%;background:${c}"></div></div>
-    </div>
-    <div class="m-hright">
-      <div class="m-hscore" style="color:${scoreCls}">${status==='uninspected'?'–':health+'%'}</div>
-      <div class="m-hdays">${daysSince!=null?daysSince+'일 전':status==='uninspected'?'미점검':''}</div>
-    </div>
-  </div>`;
 }
 
 function renderHealthCard(d, idx) {
@@ -2646,12 +2456,33 @@ function downloadMonthlyReport() {
 // ══════════════════════════════════════════
 // PAGE: HISTORY
 // ══════════════════════════════════════════
+// ══ 달력 뷰 상태 ══
+let histViewMode = 'list'; // 'list' | 'calendar'
+let histCalYear = new Date().getFullYear();
+let histCalMonth = new Date().getMonth(); // 0-based
+
 function renderHistory(el) {
   const insp = cache.inspections||[];
   const stores = cache.stores||[];
   const brands = cache.brands||[];
 
   el.innerHTML = `<div class="fade-in">
+    <!-- 뷰 전환 탭 -->
+    <div class="tab-bar" style="margin-bottom:12px">
+      <div class="tab-item ${histViewMode==='list'?'active':''}" onclick="setHistView('list')">📋 목록</div>
+      <div class="tab-item ${histViewMode==='calendar'?'active':''}" onclick="setHistView('calendar')">📅 달력</div>
+    </div>
+    ${histViewMode==='list' ? renderHistListView(insp, stores, brands) : renderHistCalView(insp, stores)}
+  </div>`;
+}
+
+function setHistView(mode) {
+  histViewMode = mode;
+  renderPage('history');
+}
+
+function renderHistListView(insp, stores, brands) {
+  return `
     <div class="filter-bar">
       <select class="filter-select" id="histBrandFilter" onchange="filterHistory()">
         <option value="">전체 브랜드</option>
@@ -2682,8 +2513,113 @@ function renderHistory(el) {
       <div class="panel-body" style="padding:0">
         <div id="histTableWrap">${renderHistTable(insp)}</div>
       </div>
+    </div>`;
+}
+
+function renderHistCalView(insp, stores) {
+  const now = new Date();
+  const y = histCalYear;
+  const m = histCalMonth;
+  const monthLabel = `${y}년 ${m+1}월`;
+
+  // 이 달의 점검 데이터를 날짜별로 그룹핑
+  const monthStr = `${y}-${String(m+1).padStart(2,'0')}`;
+  const monthInsp = insp.filter(i=>(i.inspected_at||'').startsWith(monthStr));
+  const byDay = {};
+  monthInsp.forEach(i=>{
+    const day = parseInt((i.inspected_at||'').slice(8,10));
+    if(!byDay[day]) byDay[day] = [];
+    byDay[day].push(i);
+  });
+
+  // 달력 그리기
+  const firstDay = new Date(y, m, 1).getDay(); // 0=일
+  const daysInMonth = new Date(y, m+1, 0).getDate();
+  const today = now.getFullYear()===y && now.getMonth()===m ? now.getDate() : -1;
+
+  const dayLabels = ['일','월','화','수','목','금','토'];
+  let calCells = '';
+
+  // 빈 셀
+  for(let i=0;i<firstDay;i++) calCells += '<div class="cal-cell empty"></div>';
+
+  // 날짜 셀
+  for(let d=1;d<=daysInMonth;d++) {
+    const dayInsp = byDay[d]||[];
+    const isToday = d===today;
+    const avgScore = dayInsp.length ? Math.round(dayInsp.reduce((a,b)=>a+(b.score||0),0)/dayInsp.length) : null;
+    const scoreClass = avgScore===null?'':avgScore>=80?'good':avgScore>=60?'mid':'low';
+    const hasAction = dayInsp.some(i=>(cache.failItems||[]).some(f=>f.inspections?.id===i.id && f.requires_action));
+
+    calCells += `<div class="cal-cell ${isToday?'today':''} ${dayInsp.length?scoreClass:'no-insp'}" 
+      onclick="${dayInsp.length?`showCalDaySheet(${d},'${monthStr}')`:''}" 
+      style="${dayInsp.length?'cursor:pointer':''}">
+      <div class="cal-day-num">${d}</div>
+      ${dayInsp.length ? `
+        <div class="cal-count">${dayInsp.length}건</div>
+        ${avgScore!==null?`<div class="cal-score">${avgScore}%</div>`:''}
+        ${hasAction?'<div class="cal-action-dot">🚨</div>':''}
+      ` : ''}
+    </div>`;
+  }
+
+  // 월별 통계
+  const totalInsp = monthInsp.length;
+  const avgMonthScore = totalInsp ? Math.round(monthInsp.reduce((a,b)=>a+(b.score||0),0)/totalInsp) : 0;
+  const activeDays = Object.keys(byDay).length;
+  const storesInspected = new Set(monthInsp.map(i=>i.store_id)).size;
+
+  return `
+    <div class="cal-nav">
+      <button class="btn" onclick="histCalMonth--;if(histCalMonth<0){histCalMonth=11;histCalYear--;}renderPage('history')">◀</button>
+      <div style="font-size:16px;font-weight:900">${monthLabel}</div>
+      <button class="btn" onclick="histCalMonth++;if(histCalMonth>11){histCalMonth=0;histCalYear++;}renderPage('history')">▶</button>
     </div>
-  </div>`;
+
+    <!-- 월 요약 KPI -->
+    <div class="cal-kpi-row">
+      <div class="cal-kpi"><div class="cal-kpi-val blue">${totalInsp}</div><div class="cal-kpi-label">점검 횟수</div></div>
+      <div class="cal-kpi"><div class="cal-kpi-val ${avgMonthScore>=80?'green':avgMonthScore>=60?'orange':'red'}">${avgMonthScore||'-'}${totalInsp?'%':''}</div><div class="cal-kpi-label">평균 점수</div></div>
+      <div class="cal-kpi"><div class="cal-kpi-val purple">${storesInspected}</div><div class="cal-kpi-label">점검 매장</div></div>
+      <div class="cal-kpi"><div class="cal-kpi-val blue">${activeDays}</div><div class="cal-kpi-label">점검 일수</div></div>
+    </div>
+
+    <!-- 달력 그리드 -->
+    <div class="panel" style="overflow:hidden">
+      <div class="cal-header">
+        ${dayLabels.map((d,i)=>`<div class="cal-header-day ${i===0?'sun':i===6?'sat':''}">${d}</div>`).join('')}
+      </div>
+      <div class="cal-grid">${calCells}</div>
+    </div>
+
+    <!-- 범례 -->
+    <div class="cal-legend">
+      <div class="cal-legend-item"><div class="cal-legend-dot good"></div>양호(80%+)</div>
+      <div class="cal-legend-item"><div class="cal-legend-dot mid"></div>주의(60~79%)</div>
+      <div class="cal-legend-item"><div class="cal-legend-dot low"></div>위험(-60%)</div>
+      <div class="cal-legend-item"><div class="cal-legend-dot no-insp"></div>미점검</div>
+    </div>
+
+    <!-- 이 달 점검 목록 -->
+    ${totalInsp>0?`
+    <div class="m-section-header" style="margin-top:16px;margin-bottom:8px">
+      <div class="m-section-title">이번 달 점검 목록</div>
+      <div class="m-section-more">${totalInsp}건</div>
+    </div>
+    <div class="panel"><div class="panel-body" style="padding:0">${renderHistTable(monthInsp)}</div></div>
+    `:'<div class="empty-state"><div class="empty-state-icon">📅</div><div class="empty-state-text">이 달 점검 기록이 없습니다</div></div>'}
+
+    <!-- 날짜별 상세 시트 -->
+    <div class="sheet-overlay hidden" id="calDaySheet" onclick="if(event.target===this)document.getElementById('calDaySheet').classList.add('hidden')">
+      <div class="sheet-box">
+        <div class="sheet-handle"></div>
+        <div class="sheet-header">
+          <div class="sheet-title" id="calDaySheetTitle"></div>
+          <button class="sheet-close" onclick="document.getElementById('calDaySheet').classList.add('hidden')">✕</button>
+        </div>
+        <div class="sheet-body" id="calDaySheetBody"></div>
+      </div>
+    </div>`;
 }
 
 function filterHistory() {
@@ -2705,6 +2641,47 @@ function filterHistory() {
 }
 
 function renderHistTable(insp) {
+  if(!insp.length) return '<div class="empty-state" style="padding:32px"><div class="empty-state-icon">📋</div><div class="empty-state-text">조건에 맞는 점검 이력이 없습니다</div></div>';
+  return `<table class="data-table">
+    <thead><tr><th>매장</th><th>브랜드</th><th>점검일</th><th>점수</th><th>적합</th><th>미흡</th><th>삭제</th></tr></thead>
+    <tbody>${insp.map(i=>`
+      <tr class="clickable" onclick="openDetail('${i.id}')">
+        <td data-label="매장" style="font-weight:700">${i.stores?.name||'-'}</td>
+        <td data-label="브랜드" style="color:var(--text-dim)">${i.stores?.brands?.name||'-'}</td>
+        <td data-label="날짜" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-dim)">${i.inspected_at||'-'}</td>
+        <td data-label="점수"><span class="score-pill ${scorePillClass(i.score)}">${i.score?Math.round(i.score)+'%':'미점검'}</span></td>
+        <td data-label="적합" style="color:var(--good);font-family:'DM Mono',monospace;font-size:12px">${i.pass_count??'-'}</td>
+        <td data-label="미흡" style="color:var(--poor);font-family:'DM Mono',monospace;font-size:12px">${i.fail_count??'-'}</td>
+        <td onclick="event.stopPropagation();confirmDeleteInsp('${i.id}','${i.stores?.name||''}')">
+          <span class="btn sm danger" style="font-size:10px;padding:2px 8px">삭제</span>
+        </td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+function showCalDaySheet(day, monthStr) {
+  const dateStr = `${monthStr}-${String(day).padStart(2,'0')}`;
+  const insp = (cache.inspections||[]).filter(i=>(i.inspected_at||'').startsWith(dateStr));
+  const sheet = document.getElementById('calDaySheet');
+  document.getElementById('calDaySheetTitle').textContent = `📅 ${dateStr} 점검 (${insp.length}건)`;
+  document.getElementById('calDaySheetBody').innerHTML = insp.length
+    ? `<div class="store-card-list">${insp.map(i=>`
+        <div class="store-card" onclick="openDetail('${i.id}');document.getElementById('calDaySheet').classList.add('hidden')">
+          <div class="store-card-left">
+            <div class="store-card-name">${i.stores?.name||'-'}</div>
+            <div class="store-card-meta">${i.stores?.brands?.name||'-'} · 점검자: ${i.inspector_name||'-'}</div>
+          </div>
+          <div class="store-card-right">
+            <span class="score-pill ${scorePillClass(i.score)}">${i.score?Math.round(i.score)+'%':'미점검'}</span>
+            <div style="font-size:11px;color:var(--text-muted)">미흡 ${i.fail_count||0}건</div>
+          </div>
+        </div>`).join('')}</div>`
+    : '<div class="empty-state"><div class="empty-state-text">점검 기록 없음</div></div>';
+  sheet.classList.remove('hidden');
+}
+
+
   if(!insp.length) return '<div class="empty-state" style="padding:32px"><div class="empty-state-icon">📋</div><div class="empty-state-text">조건에 맞는 점검 이력이 없습니다</div></div>';
   return `<table class="data-table">
     <thead><tr><th>매장</th><th>브랜드</th><th>점검일</th><th>점수</th><th>적합</th><th>미흡</th><th>삭제</th></tr></thead>
@@ -3295,14 +3272,14 @@ function detectRisks() {
   stores.forEach(s=>{
     const list = (allByStore[s.id]||[]).slice(0,3).map(i=>i.score||0);
     if(list.length>=3 && list[0]<list[1] && list[1]<list[2]) {
-      alerts.push({type:'critical',icon:'📉',title:`${s.name} — 3회 연속 점수 하락`,desc:`${Math.round(list[2]*100)}% → ${Math.round(list[1]*100)}% → ${Math.round(list[0]*100)}%로 지속 하락`,store:s.id});
+      alerts.push({type:'critical',icon:'📉',title:`${s.name} — 3회 연속 점수 하락`,desc:`${Math.round(list[2]||0)}% → ${Math.round(list[1]||0)}% → ${Math.round(list[0]||0)}%로 지속 하락`,store:s.id});
     }
   });
 
   // 2. 60점 미만 매장
   Object.entries(latestMap).forEach(([sid,l])=>{
     const s = stores.find(x=>x.id===sid);
-    if(l.score && l.score<0.6 && s) alerts.push({type:'critical',icon:'🔴',title:`${s.name} — 위험 점수 (${Math.round(l.score*100)}%)`,desc:`기준 60점 미달. 즉각적인 현장 점검이 필요합니다.`,store:sid});
+    if(l.score && l.score<60 && s) alerts.push({type:'critical',icon:'🔴',title:`${s.name} — 위험 점수 (${Math.round(l.score||0)}%)`,desc:`기준 60점 미달. 즉각적인 현장 점검이 필요합니다.`,store:sid});
   });
 
   // 3. 45일 이상 미점검
@@ -3408,7 +3385,7 @@ function renderHeatmap(el) {
             <div class="heatmap-grid" style="grid-template-columns:repeat(${cols},1fr)">
               ${bStores.map(s=>{
                 const l=latestMap[s.id];
-                const sc=l?Math.round(l.score*100):null;
+                const sc=l?Math.round(l.score||0):null;
                 return `<div class="heatmap-cell" style="background:${scoreToColor(sc)};min-height:44px" onclick="openDetailByStore('${s.id}')" title="${s.name}: ${sc!==null?sc+'%':'미점검'}">
                   <div class="heatmap-cell-label">${s.name.replace(/점$/,'')}<br>${sc!==null?sc+'%':'–'}</div>
                 </div>`;
@@ -3439,7 +3416,7 @@ function renderHeatmap(el) {
                 <td style="padding:6px 8px;font-weight:700">${brand}</td>
                 ${months.map(m=>{
                   const mInsps = bStores.flatMap(s=>(allByStore[s.id]||[]).filter(i=>i.inspected_at?.startsWith(m)));
-                  const avg = mInsps.length?Math.round(mInsps.reduce((a,b)=>a+(b.score||0),0)/mInsps.length*100):null;
+                  const avg = mInsps.length?Math.round(mInsps.reduce((a,b)=>a+(b.score||0),0)/mInsps.length):null;
                   return `<td style="padding:4px 8px;text-align:center">
                     <div style="background:${scoreToColor(avg)};border-radius:6px;padding:5px 8px;color:${avg?'#fff':'var(--text-muted)'};font-weight:700;font-family:'DM Mono',monospace;font-size:11px">
                       ${avg!==null?avg+'%':'–'}
@@ -3469,17 +3446,17 @@ function renderWeeklyReport(el) {
   const now = new Date();
   const weekAgo = new Date(now-7*24*60*60*1000);
   const weekInsp = insp.filter(i=>new Date(i.inspected_at)>=weekAgo);
-  const avgScore = weekInsp.length?Math.round(weekInsp.reduce((a,b)=>a+(b.score||0),0)/weekInsp.length*100):0;
+  const avgScore = weekInsp.length?Math.round(weekInsp.reduce((a,b)=>a+(b.score||0),0)/weekInsp.length):0;
   const allLatest = Object.values(latestMap);
-  const overallAvg = allLatest.length?Math.round(allLatest.reduce((a,b)=>a+(b.score||0),0)/allLatest.length*100):0;
+  const overallAvg = allLatest.length?Math.round(allLatest.reduce((a,b)=>a+(b.score||0),0)/allLatest.length):0;
 
   const top3 = allLatest.sort((a,b)=>(b.score||0)-(a.score||0)).slice(0,3).map(i=>{
     const s=stores.find(x=>x.id===i.store_id);
-    return s?`${s.name} ${Math.round(i.score*100)}점`:'';
+    return s?`${s.name} ${Math.round(i.score||0)}점`:'';
   }).filter(Boolean);
   const bot3 = allLatest.sort((a,b)=>(a.score||0)-(b.score||0)).slice(0,3).map(i=>{
     const s=stores.find(x=>x.id===i.store_id);
-    return s?`${s.name} ${Math.round(i.score*100)}점`:'';
+    return s?`${s.name} ${Math.round(i.score||0)}점`:'';
   }).filter(Boolean);
 
   const uninsp = stores.filter(s=>!latestMap[s.id]);
@@ -3538,7 +3515,7 @@ function exportWeeklyExcel() {
   const rows = [['매장','브랜드','최근점검일','점수','미흡건수','상태']];
   stores.forEach(s=>{
     const l = latestMap[s.id];
-    const sc = l?Math.round(l.score*100):null;
+    const sc = l?Math.round(l.score||0):null;
     rows.push([s.name,s.brands?.name||'-',l?.inspected_at||'미점검',sc!==null?sc+'%':'미점검',l?.fail_count||0,sc===null?'미점검':sc>=80?'양호':sc>=70?'주의':'위험']);
   });
   const ws = XLSX.utils.aoa_to_sheet(rows);
@@ -3579,7 +3556,7 @@ function renderTimeline(el) {
 function renderTlItems(list, stores, failItems) {
   return list.map(i=>{
     const s = stores.find(x=>x.id===i.store_id);
-    const sc = Math.round((i.score||0)*100);
+    const sc = Math.round(i.score||0);
     const status = sc>=80?'good':sc>=70?'warning':'danger';
     const myFails = failItems.filter(f=>f.inspections?.id===i.id);
     const hasAction = myFails.some(f=>f.requires_action);
@@ -3608,187 +3585,15 @@ function filterTimeline() {
 // ══════════════════════════════════════════
 // 11차: 다크모드 & 오프라인
 // ══════════════════════════════════════════
-// ══════════════════════════════════════════
-// 12차: 모바일 히어로 업데이트
-// ══════════════════════════════════════════
-function updateMobileHero() {
-  if(window.innerWidth > 700) return;
-  const stores = cache.stores||[];
-  const insp = cache.inspections||[];
-  const latestMap = getLatestInspByStore();
-  const allLatest = Object.values(latestMap);
-  const hData = stores.map(s=>calcHealth(s,insp));
-  const goodCnt  = hData.filter(h=>h.status==='good').length;
-  const warnCnt  = hData.filter(h=>h.status==='warning').length;
-  const dangerCnt= hData.filter(h=>h.status==='danger').length;
-  const uninspCnt= hData.filter(h=>h.status==='uninspected').length;
-  const actionCnt= (cache.failItems||[]).filter(f=>f.requires_action).length;
-  const avg = allLatest.length
-    ? Math.round(allLatest.reduce((a,b)=>a+(b.score||0),0)/allLatest.length*100) : 0;
-  const now = new Date();
-  const thisMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-  const mInsp = insp.filter(i=>(i.inspected_at||'').startsWith(thisMonth));
-  const mAvg = mInsp.length
-    ? Math.round(mInsp.reduce((a,b)=>a+(b.score||0),0)/mInsp.length*100) : 0;
-
-  // 게이지 링 업데이트
-  const circ = 226.2;
-  const offset = circ - (avg/100)*circ;
-  const color = avg>=80?'#4ade80':avg>=70?'#fbbf24':'#f87171';
-  const arc = document.getElementById('mGaugeArc');
-  if(arc){ arc.style.strokeDashoffset=offset; arc.setAttribute('stroke',color); }
-
-  const s = (id,v) => { const e=document.getElementById(id); if(e) e.textContent=v; };
-  s('mGaugeNum', avg+'%');
-  s('mStatMonth', mAvg ? mAvg+'%' : '–');
-  s('mStatDanger', dangerCnt);
-  s('mStatAction', actionCnt);
-  s('mStatUninsp', uninspCnt);
-  s('mChipTotal', stores.length);
-  s('mChipGood', goodCnt);
-  s('mChipWarn', warnCnt);
-  s('mChipDanger', dangerCnt);
-  s('mChipUninsp', uninspCnt);
-  s('mHeroDate', now.toLocaleDateString('ko-KR',{month:'long',day:'numeric',weekday:'short'}));
-
-  // 다크모드 버튼 동기화
-  const mdb = document.getElementById('mDarkBtn');
-  if(mdb) mdb.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
-}
-
-// ══════════════════════════════════════════
-// 12~13차: 모바일 오버뷰 전용 렌더
-// ══════════════════════════════════════════
-function renderMobileOverview(el) {
-  const hero = document.getElementById('mobileHero');
-  if(hero) hero.style.display = 'block';
-  document.body.classList.add('hero-active');
-  updateMobileHero();
-
-  const stores    = cache.stores||[];
-  const insp      = cache.inspections||[];
-  const latestMap = getLatestInspByStore();
-  const prevMap   = getPrevInspByStore();
-  const failItems = cache.failItems||[];
-  const hData     = stores.map(s=>({store:s,...calcHealth(s,insp)}));
-
-  // 위험/주의 매장 (낮은점수 먼저, 최대 10개)
-  const alertStores = hData
-    .filter(h=>h.status==='danger'||h.status==='warning')
-    .sort((a,b)=>a.health-b.health).slice(0,10);
-
-  // 즉시조치 항목 (최대 5개)
-  const actions = failItems.filter(f=>f.requires_action).slice(0,5);
-
-  // 최근 점검 (최대 8개)
-  const recent = [...insp].sort((a,b)=>b.inspected_at?.localeCompare(a.inspected_at)).slice(0,8);
-
-  el.innerHTML = `<div class="fade-in" style="padding-bottom:8px">
-
-    ${/* ── 위험/주의 매장 카드 레일 ──*/ ''}
-    <div class="m-sec" style="animation:fadeSlideUp .2s ease both">
-      <div class="m-sec-head">
-        <div class="m-sec-title">${alertStores.length ? '🔴 관리 필요 매장' : '✅ 전체 양호'}</div>
-        <div class="m-sec-more tap" onclick="setPage('health')">전체 →</div>
-      </div>
-      ${alertStores.length ? `<div class="m-rail">
-        ${alertStores.map(({store,health,status,latest,daysSince})=>{
-          const sc = status==='uninspected'?'none':status==='good'?'good':status==='warning'?'warn':'danger';
-          return `<div class="m-scard ${sc} tap" onclick="openDetailByStore('${store.id}')">
-            <div class="m-scard-name">${store.name}</div>
-            <div class="m-scard-brand">${store.brands?.name||'-'}</div>
-            <div class="m-scard-score ${sc}">${health||'–'}</div>
-            <div class="m-scard-meta">${daysSince!=null?daysSince+'일 전':latest?.inspected_at||'미점검'}</div>
-          </div>`;
-        }).join('')}
-      </div>` : `<div style="background:var(--good-bg);border:1px solid rgba(22,163,74,.2);border-radius:12px;padding:14px;text-align:center;font-size:13px;font-weight:700;color:var(--good)">위험/주의 매장이 없습니다 🎉</div>`}
-    </div>
-
-    ${/* ── 즉시조치 ──*/ ''}
-    ${actions.length ? `<div class="m-sec" style="animation:fadeSlideUp .22s ease both">
-      <div class="m-sec-head">
-        <div class="m-sec-title">🚨 즉시조치 필요</div>
-        <div class="m-sec-more tap" onclick="setPage('fails')">전체 →</div>
-      </div>
-      ${actions.map(f=>`
-        <div class="m-fcard tap" onclick="${f.inspections?.id?`openDetail('${f.inspections.id}')`:''}">
-          <div class="m-fcard-bar action"></div>
-          <div class="m-fcard-body">
-            <div class="m-fcard-store">${f.inspections?.stores?.name||'-'} · ${f.inspections?.stores?.brands?.name||'-'}</div>
-            <div class="m-fcard-note">${f.note||'메모 없음'}</div>
-            <div class="m-fcard-tags"><span class="m-ftag action">🚨 즉시조치</span></div>
-          </div>
-          <div class="m-fcard-right">
-            <span style="font-size:9px;color:var(--text-muted);font-family:'DM Mono',monospace">${f.inspections?.inspected_at||''}</span>
-          </div>
-        </div>`).join('')}
-    </div>` : ''}
-
-    ${/* ── 최근 점검 ──*/ ''}
-    <div class="m-sec" style="animation:fadeSlideUp .25s ease both">
-      <div class="m-sec-head">
-        <div class="m-sec-title">📋 최근 점검</div>
-        <div class="m-sec-more tap" onclick="setPage('history')">전체 →</div>
-      </div>
-      <div class="g-list">
-        ${recent.map((i,idx)=>{
-          const s=stores.find(x=>x.id===i.store_id);
-          const sc=Math.round((i.score||0)*100);
-          const cls=sc>=80?'good':sc>=70?'warn':'danger';
-          const prev=prevMap[i.store_id];
-          const diff=prev?Math.round((i.score-(prev.score||0))*100):null;
-          const ico=sc>=80?'✅':sc>=70?'⚠️':'🔴';
-          const ibg=sc>=80?'var(--good-bg)':sc>=70?'var(--warn-bg)':'var(--poor-bg)';
-          return `<div class="g-item tap" onclick="openDetail('${i.id}')" style="${idx===0?'':''}">
-            <div class="g-ic" style="background:${ibg}">${ico}</div>
-            <div class="g-body">
-              <div class="g-title">${s?.name||'-'}</div>
-              <div class="g-sub">${s?.brands?.name||'-'} · ${i.inspected_at||''}</div>
-            </div>
-            <div class="g-right">
-              ${diff!==null?`<span style="font-size:10px;font-weight:700;color:${diff>=0?'var(--good)':'var(--poor)'}">${diff>=0?'▲':'▼'}${Math.abs(diff)}</span>`:''}
-              <span class="score-pill ${cls}">${sc}%</span>
-              <span class="g-chev">›</span>
-            </div>
-          </div>`;
-        }).join('')}
-      </div>
-    </div>
-
-    ${/* ── 빠른 이동 ──*/ ''}
-    <div class="m-sec" style="animation:fadeSlideUp .28s ease both">
-      <div class="m-sec-title" style="margin-bottom:10px">⚡ 빠른 이동</div>
-      <div class="m-qgrid">
-        ${[
-          {p:'myStores', i:'📍', l:'담당매장'},
-          {p:'riskAlert', i:'🚨', l:'위험감지'},
-          {p:'weeklyReport', i:'📰', l:'주간리포트'},
-          {p:'timeline', i:'🕐', l:'타임라인'},
-          {p:'trend', i:'📈', l:'트렌드'},
-          {p:'heatmap', i:'🗺️', l:'히트맵'},
-          {p:'schedule', i:'📅', l:'스케줄'},
-          {p:'compare', i:'📊', l:'비교'},
-        ].map(m=>`<button class="m-qbtn" onclick="setPage('${m.p}')">
-          <div class="m-qbtn-ic">${m.i}</div>
-          <div class="m-qbtn-lbl">${m.l}</div>
-        </button>`).join('')}
-      </div>
-    </div>
-  </div>`;
-}
-
-// ══════════════════════════════════════════
-// 14차: iOS/갤럭시 – 다크모드 + 오프라인
-// ══════════════════════════════════════════
 function toggleDarkMode() {
   document.body.classList.toggle('dark-mode');
   const isDark = document.body.classList.contains('dark-mode');
-  try{ localStorage.setItem('panasia_dark', isDark?'1':'0'); }catch(e){}
-  // 모든 다크 버튼 동기화
-  document.querySelectorAll('#darkToggleBtn,#mDarkBtn').forEach(b=>{ if(b) b.textContent=isDark?'☀️':'🌙'; });
+  document.getElementById('darkToggleBtn').textContent = isDark ? '☀️' : '🌙';
+  try { localStorage.setItem('panasia_dark', isDark?'1':'0'); } catch(e){}
   showToast(isDark?'다크모드 켜짐 🌙':'라이트모드 켜짐 ☀️','success');
 }
 
+// 오프라인 감지
 window.addEventListener('offline', ()=>{
   document.getElementById('offlineBar').classList.add('show');
   document.body.classList.add('offline-mode');
@@ -3796,16 +3601,96 @@ window.addEventListener('offline', ()=>{
 window.addEventListener('online', ()=>{
   document.getElementById('offlineBar').classList.remove('show');
   document.body.classList.remove('offline-mode');
-  showToast('온라인 복구 ✅','success');
+  showToast('온라인 복구됨 ✅','success');
   loadAll();
 });
 
-// 15차: 햅틱 피드백 (갤럭시/안드로이드)
-function haptic(ms=8){ if(navigator.vibrate) navigator.vibrate(ms); }
-document.addEventListener('click', e=>{
-  if(e.target.closest('.bnav-item,.m-qbtn,.m-hbtn,.m-chip,.m-scard,.m-fcard,.g-item,.m-hitem'))
-    haptic();
-}, {passive:true});
+// ══════════════════════════════════════════
+// 12-15차: 모바일 최적화 JS
+// ══════════════════════════════════════════
+
+// 15차: 연결 상태 표시기 개선
+function updateDbStatus(state) {
+  const dot = document.getElementById('dbDot');
+  const txt = document.getElementById('dbText');
+  if(!dot) return;
+  if(state==='live') {
+    dot.className='db-dot live';
+    if(txt) txt.textContent='DB 연결됨';
+  } else if(state==='error') {
+    dot.className='db-dot error';
+    if(txt) txt.textContent='연결 오류';
+  } else {
+    dot.className='db-dot';
+    if(txt) txt.textContent='연결 중...';
+  }
+}
+
+// 13차: 스크롤 위치 복원 (페이지 전환 시)
+const scrollPositions = {};
+function saveScrollPosition(page) {
+  const content = document.getElementById('pageContent');
+  if(content) scrollPositions[page] = content.scrollTop;
+}
+function restoreScrollPosition(page) {
+  const content = document.getElementById('pageContent');
+  if(content && scrollPositions[page]) {
+    setTimeout(()=>{ content.scrollTop = scrollPositions[page]||0; }, 50);
+  } else if(content) {
+    content.scrollTop = 0;
+  }
+}
+
+// 14차: 모바일 차트 높이 동적 조정
+function getMobileChartHeight() {
+  return window.innerWidth <= 700 ? 180 : 260;
+}
+
+// 15차: 더보기 시트 접근성 개선 (스와이프로 닫기)
+(function setupSheetSwipe() {
+  let startY = 0, currentY = 0;
+  document.addEventListener('touchstart', e => {
+    const sheet = document.querySelector('.sheet-box');
+    if(sheet && sheet.contains(e.target)) {
+      startY = e.touches[0].clientY;
+    }
+  }, {passive:true});
+  document.addEventListener('touchmove', e => {
+    if(!startY) return;
+    currentY = e.touches[0].clientY;
+  }, {passive:true});
+  document.addEventListener('touchend', () => {
+    if(startY && currentY && (currentY - startY) > 80) {
+      closeMoreSheet();
+    }
+    startY = 0; currentY = 0;
+  }, {passive:true});
+})();
+
+// 12차: 탑바 스크롤 시 그림자 효과
+(function setupTopbarShadow() {
+  const content = document.getElementById('pageContent');
+  const topbar = document.querySelector('.topbar');
+  if(!content || !topbar) return;
+  content.addEventListener('scroll', () => {
+    if(content.scrollTop > 10) {
+      topbar.style.boxShadow = '0 2px 12px rgba(0,0,0,.12)';
+    } else {
+      topbar.style.boxShadow = '0 1px 4px rgba(0,0,0,.05)';
+    }
+  }, {passive:true});
+})();
+
+// 15차: 키보드 나타날 때 뷰포트 처리 (iOS Safari)
+if(window.visualViewport) {
+  window.visualViewport.addEventListener('resize', () => {
+    const fab = document.getElementById('fabBtn');
+    const bnav = document.getElementById('bottomNav');
+    const keyboardVisible = window.visualViewport.height < window.innerHeight * 0.8;
+    if(fab) fab.style.display = keyboardVisible ? 'none' : '';
+    if(bnav) bnav.style.transform = keyboardVisible ? 'translateY(100%)' : '';
+  });
+}
 
 // ══════════════════════════════════════════
 // TOAST
