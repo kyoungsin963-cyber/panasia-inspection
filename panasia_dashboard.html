@@ -2681,26 +2681,6 @@ function showCalDaySheet(day, monthStr) {
   sheet.classList.remove('hidden');
 }
 
-
-  if(!insp.length) return '<div class="empty-state" style="padding:32px"><div class="empty-state-icon">📋</div><div class="empty-state-text">조건에 맞는 점검 이력이 없습니다</div></div>';
-  return `<table class="data-table">
-    <thead><tr><th>매장</th><th>브랜드</th><th>점검일</th><th>점수</th><th>적합</th><th>미흡</th><th>삭제</th></tr></thead>
-    <tbody>${insp.map(i=>`
-      <tr class="clickable" onclick="openDetail('${i.id}')">
-        <td style="font-weight:700">${i.stores?.name||'-'}</td>
-        <td style="color:var(--text-dim)">${i.stores?.brands?.name||'-'}</td>
-        <td style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-dim)">${i.inspected_at||'-'}</td>
-        <td><span class="score-pill ${scorePillClass(i.score)}">${i.score?Math.round(i.score)+'%':'미점검'}</span></td>
-        <td style="color:var(--good);font-family:'DM Mono',monospace;font-size:12px">${i.pass_count??'-'}</td>
-        <td style="color:var(--poor);font-family:'DM Mono',monospace;font-size:12px">${i.fail_count??'-'}</td>
-        <td onclick="event.stopPropagation();confirmDeleteInsp('${i.id}','${i.stores?.name||''}')">
-          <span class="btn sm danger" style="font-size:10px;padding:2px 8px">삭제</span>
-        </td>
-      </tr>`).join('')}
-    </tbody>
-  </table>`;
-}
-
 // ══════════════════════════════════════════
 // PAGE: INSPECTOR — 4차
 // ══════════════════════════════════════════
